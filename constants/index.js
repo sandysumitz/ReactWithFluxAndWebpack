@@ -1,0 +1,5 @@
+export default {
+  ADD_NEW_ITEM: "ADD_NEW_ITEM",
+  MENU_SELECT: "MENU_SELECT",
+  MENU_SELECTED: "MENU_SELECTED",
+};
