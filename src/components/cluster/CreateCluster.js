@@ -6,50 +6,36 @@ import ClusterActionCreator from "../../actionCreator/ClusterActionCreator";
 class CreateCluster extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.state = this.getInitialState();
+  }
+
+  getInitialState = () => {
+    return {
       message: "",
       cloudSrvc: "Azure",
       masterCount: "1",
       nodeCount: "",
-      masterSize: "",
-      nodeSize: "",
+      masterSize: "Standard_B2s",
+      nodeSize: "Standard_B1ms",
       clusterName: "",
-      credentials: "",
-      imageName: "",
-      dashboard: "",
+      credentials: "Operations",
+      imageName: "Ubuntu",
+      dashboard: "Kubernetes",
+      enableLogging: false,
+      enableMonitoring: false,
     };
-  }
-
-  afterAdding = (items) => {
-    console.log("items added", items);
   };
 
-  componentDidMount() {
-    ClusterStore.addEventListener("addedNewItem", this.afterAdding);
-  }
-  componentWillUnmount() {
-    ClusterStore.removeEventListener("addedNewItem", this.afterAdding);
-  }
-
-  handleNodeChange = (event) => {
-    this.setState({ nodeCount: event.target.value });
-  };
-  handleClusterNameChange = (event) => {
-    this.setState({ clusterName: event.target.value });
-  };
-  handleSelectChange = (event) => {
-    console.log("event.target :", event.target.id);
-    this.setState({ cloudSrvc: event.target.value });
-  };
-
-  handleAddItem = (event) => {
+  handleReset = (event) => {
     event.preventDefault();
-    console.log("handleAddItem");
-    ClusterActionCreator.addNewItem("testinggg");
+    this.setState(this.getInitialState());
   };
-
-  handleReset = () => {};
-
+  handleOnChange = (event) => {
+    console.log("event.target :", event.target.name);
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+  };
   handleSubmit = (event) => {
     event.preventDefault();
     const { nodeCount, clusterName, cloudSrvc } = this.state;
@@ -86,7 +72,7 @@ class CreateCluster extends Component {
   };
 
   render() {
-    console.log("ClusterStore.items", ClusterStore.items);
+    console.log("this.state.enableLogging", this.state);
     return (
       <div className="container-fluid">
         <div className="row page-titles">
@@ -105,10 +91,10 @@ class CreateCluster extends Component {
                       <label className="col-sm-12">Provider</label>
                       <div className="col-sm-12">
                         <select
-                          id="cloudSrvc"
+                          name="cloudSrvc"
                           className="form-control form-control-line"
                           value={this.state.cloudSrvc}
-                          onChange={this.handleSelectChange}
+                          onChange={this.handleOnChange}
                         >
                           <option value="Azure">Azure - Native</option>
                           <option value="AKS">AKS</option>
@@ -120,9 +106,10 @@ class CreateCluster extends Component {
                       <div className="col-md-12">
                         <input
                           type="text"
+                          name="clusterName"
                           required
                           value={this.state.clusterName}
-                          onChange={this.handleClusterNameChange}
+                          onChange={this.handleOnChange}
                           className="form-control form-control-line"
                         />
                       </div>
@@ -133,10 +120,11 @@ class CreateCluster extends Component {
                       </label>
                       <div className="col-md-12">
                         <input
+                          name="nodeCount"
                           type="text"
                           required
                           value={this.state.nodeCount}
-                          onChange={this.handleNodeChange}
+                          onChange={this.handleOnChange}
                           className="form-control form-control-line"
                         />
                       </div>
@@ -165,10 +153,10 @@ class CreateCluster extends Component {
                         </label>
                         <div className="col-sm-12">
                           <select
-                            id="masterSize"
+                            name="masterSize"
                             className="form-control form-control-line"
                             value={this.state.masterSize}
-                            onChange={this.handleSelectChange}
+                            onChange={this.handleOnChange}
                           >
                             <option value="Standard_B2s">Standard_B2s</option>
                           </select>
@@ -179,10 +167,10 @@ class CreateCluster extends Component {
                       <label className="col-sm-12">Worker Instance Type</label>
                       <div className="col-sm-12">
                         <select
-                          id="nodeSize"
+                          name="nodeSize"
                           className="form-control form-control-line"
                           value={this.state.nodeSize}
-                          onChange={this.handleSelectChange}
+                          onChange={this.handleOnChange}
                         >
                           <option value="Standard_B1ms">Standard_B1ms</option>
                         </select>
@@ -192,10 +180,10 @@ class CreateCluster extends Component {
                       <label className="col-sm-12">Image Name</label>
                       <div className="col-sm-12">
                         <select
-                          id="imageName"
+                          name="imageName"
                           className="form-control form-control-line"
                           value={this.state.imageName}
-                          onChange={this.handleSelectChange}
+                          onChange={this.handleOnChange}
                         >
                           <option value="Ubuntu">Ubuntu</option>
                           <option value="Centos">Centos</option>
@@ -206,68 +194,72 @@ class CreateCluster extends Component {
                       <label className="col-sm-12">Dashboard</label>
                       <div className="col-sm-12">
                         <select
-                          id="dashboard"
+                          name="dashboard"
                           className="form-control form-control-line"
                           value={this.state.dashboard}
-                          onChange={this.handleSelectChange}
+                          onChange={this.handleOnChange}
                         >
                           <option value="Kubernetes">Kubernetes</option>
                           <option value="K8Dash">K8Dash</option>
                         </select>
                       </div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <label className="col-sm-12">Enable Logging</label>
-                      <div class="col-sm-12">
+                      <div className="col-sm-12">
                         <input
                           type="radio"
-                          name="log"
+                          name="enableLogging"
                           id="log_yes"
-                          value="option1"
-                          checked
+                          value={true}
+                          onChange={this.handleOnChange}
                         />
-                        <label for="log_yes">Yes</label>
+                        <label htmlFor="log_yes">Yes</label>
                       </div>
-                      <div class="col-sm-12">
+                      <div className="col-sm-12">
                         <input
                           type="radio"
-                          name="log"
+                          name="enableLogging"
                           id="log_no"
-                          value="option2"
+                          value={false}
+                          defaultChecked
+                          onChange={this.handleOnChange}
                         />
-                        <label for="log_no">No</label>
+                        <label htmlFor="log_no">No</label>
                       </div>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                       <label className="col-sm-12">Enable Monitoring</label>
-                      <div class="col-sm-12">
+                      <div className="col-sm-12">
                         <input
                           type="radio"
-                          name="monitor"
+                          name="enableMonitoring"
                           id="monitor_yes"
-                          value="option1"
-                          checked
+                          value={true}
+                          onChange={this.handleOnChange}
                         />
-                        <label for="monitor_yes">Yes</label>
+                        <label htmlFor="monitor_yes">Yes</label>
                       </div>
-                      <div class="col-sm-12">
+                      <div className="col-sm-12">
                         <input
                           type="radio"
-                          name="monitor"
+                          name="enableMonitoring"
                           id="monitor_no"
-                          value="option2"
+                          value={false}
+                          defaultChecked
+                          onChange={this.handleOnChange}
                         />
-                        <label for="monitor_no">No</label>
+                        <label htmlFor="monitor_no">No</label>
                       </div>
                     </div>
                     <div className="form-group">
                       <label className="col-sm-12">Credentials</label>
                       <div className="col-sm-12">
                         <select
-                          id="credentials"
+                          name="credentials"
                           className="form-control form-control-line"
                           value={this.state.credentials}
-                          onChange={this.handleSelectChange}
+                          onChange={this.handleOnChange}
                         >
                           <option value="Operations">Operations</option>
                         </select>
