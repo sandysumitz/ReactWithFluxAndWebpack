@@ -7,10 +7,16 @@ class CreateCluster extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nodeCount: "",
-      clusterName: "",
       message: "",
       cloudSrvc: "Azure",
+      masterCount: "1",
+      nodeCount: "",
+      masterSize: "",
+      nodeSize: "",
+      clusterName: "",
+      credentials: "",
+      imageName: "",
+      dashboard: "",
     };
   }
 
@@ -32,6 +38,7 @@ class CreateCluster extends Component {
     this.setState({ clusterName: event.target.value });
   };
   handleSelectChange = (event) => {
+    console.log("event.target :", event.target.id);
     this.setState({ cloudSrvc: event.target.value });
   };
 
@@ -40,6 +47,8 @@ class CreateCluster extends Component {
     console.log("handleAddItem");
     ClusterActionCreator.addNewItem("testinggg");
   };
+
+  handleReset = () => {};
 
   handleSubmit = (event) => {
     event.preventDefault();
@@ -89,19 +98,21 @@ class CreateCluster extends Component {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-block">
-                <h4 className="card-title">Create New Cluster</h4>
+                <h4 className="card-title">Cluster Management</h4>
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
                     <div className="form-group">
-                      <label className="col-md-12">No of Nodes</label>
-                      <div className="col-md-12">
-                        <input
-                          type="text"
-                          required
-                          value={this.state.nodeCount}
-                          onChange={this.handleNodeChange}
+                      <label className="col-sm-12">Provider</label>
+                      <div className="col-sm-12">
+                        <select
+                          id="cloudSrvc"
                           className="form-control form-control-line"
-                        />
+                          value={this.state.cloudSrvc}
+                          onChange={this.handleSelectChange}
+                        >
+                          <option value="Azure">Azure - Native</option>
+                          <option value="AKS">AKS</option>
+                        </select>
                       </div>
                     </div>
                     <div className="form-group">
@@ -117,25 +128,169 @@ class CreateCluster extends Component {
                       </div>
                     </div>
                     <div className="form-group">
-                      <label className="col-sm-12">Cloud Provider</label>
+                      <label className="col-md-12">
+                        Number of Worker Nodes
+                      </label>
+                      <div className="col-md-12">
+                        <input
+                          type="text"
+                          required
+                          value={this.state.nodeCount}
+                          onChange={this.handleNodeChange}
+                          className="form-control form-control-line"
+                        />
+                      </div>
+                    </div>
+                    {this.state.cloudSrvc === "Azure" ? (
+                      <div className="form-group">
+                        <label className="col-md-12">
+                          Number of Master Nodes
+                        </label>
+                        <div className="col-md-12">
+                          <input
+                            type="text"
+                            required
+                            disabled
+                            value={this.state.masterCount}
+                            onChange={this.handleNodeChange}
+                            className="form-control form-control-line"
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                    {this.state.cloudSrvc === "Azure" ? (
+                      <div className="form-group">
+                        <label className="col-sm-12">
+                          Master Instance Type
+                        </label>
+                        <div className="col-sm-12">
+                          <select
+                            id="masterSize"
+                            className="form-control form-control-line"
+                            value={this.state.masterSize}
+                            onChange={this.handleSelectChange}
+                          >
+                            <option value="Standard_B2s">Standard_B2s</option>
+                          </select>
+                        </div>
+                      </div>
+                    ) : null}
+                    <div className="form-group">
+                      <label className="col-sm-12">Worker Instance Type</label>
                       <div className="col-sm-12">
                         <select
+                          id="nodeSize"
                           className="form-control form-control-line"
-                          value={this.state.cloudSrvc}
+                          value={this.state.nodeSize}
                           onChange={this.handleSelectChange}
                         >
-                          <option value="Azure">Azure</option>
-                          <option value="AKS">AKS</option>
+                          <option value="Standard_B1ms">Standard_B1ms</option>
                         </select>
                       </div>
                     </div>
                     <div className="form-group">
+                      <label className="col-sm-12">Image Name</label>
+                      <div className="col-sm-12">
+                        <select
+                          id="imageName"
+                          className="form-control form-control-line"
+                          value={this.state.imageName}
+                          onChange={this.handleSelectChange}
+                        >
+                          <option value="Ubuntu">Ubuntu</option>
+                          <option value="Centos">Centos</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label className="col-sm-12">Dashboard</label>
+                      <div className="col-sm-12">
+                        <select
+                          id="dashboard"
+                          className="form-control form-control-line"
+                          value={this.state.dashboard}
+                          onChange={this.handleSelectChange}
+                        >
+                          <option value="Kubernetes">Kubernetes</option>
+                          <option value="K8Dash">K8Dash</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label className="col-sm-12">Enable Logging</label>
+                      <div class="col-sm-12">
+                        <input
+                          type="radio"
+                          name="log"
+                          id="log_yes"
+                          value="option1"
+                          checked
+                        />
+                        <label for="log_yes">Yes</label>
+                      </div>
+                      <div class="col-sm-12">
+                        <input
+                          type="radio"
+                          name="log"
+                          id="log_no"
+                          value="option2"
+                        />
+                        <label for="log_no">No</label>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label className="col-sm-12">Enable Monitoring</label>
+                      <div class="col-sm-12">
+                        <input
+                          type="radio"
+                          name="monitor"
+                          id="monitor_yes"
+                          value="option1"
+                          checked
+                        />
+                        <label for="monitor_yes">Yes</label>
+                      </div>
+                      <div class="col-sm-12">
+                        <input
+                          type="radio"
+                          name="monitor"
+                          id="monitor_no"
+                          value="option2"
+                        />
+                        <label for="monitor_no">No</label>
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label className="col-sm-12">Credentials</label>
+                      <div className="col-sm-12">
+                        <select
+                          id="credentials"
+                          className="form-control form-control-line"
+                          value={this.state.credentials}
+                          onChange={this.handleSelectChange}
+                        >
+                          <option value="Operations">Operations</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="form-group float-left">
                       <div className="col-sm-10">
                         <button
                           onClick={this.handleSubmit}
                           className="btn btn-success"
                         >
                           Submit
+                        </button>
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <div className="col-sm-10">
+                        <button
+                          onClick={this.handleReset}
+                          className="btn btn-danger"
+                        >
+                          Reset
                         </button>
                       </div>
                     </div>
