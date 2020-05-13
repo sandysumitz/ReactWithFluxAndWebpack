@@ -2,17 +2,17 @@ import React, { Component, createFactory } from "react";
 import CreateCluster from "./cluster/CreateCluster";
 import UnderConstruction from "./UnderConstruction";
 import MenuStore from "../stores/MenuStore";
-import ActionType from "../constants";
+import EventType from "../constants/eventType";
 
 class PageWrapper extends Component {
   constructor() {
     super();
   }
   componentDidMount() {
-    MenuStore.addEventListener(ActionType.MENU_SELECTED, this.menuSeleted);
+    MenuStore.addEventListener(EventType.MENU_SELECTED, this.menuSeleted);
   }
   componentWillUnmount() {
-    MenuStore.removeEventListener(ActionType.MENU_SELECTED, this.menuSeleted);
+    MenuStore.removeEventListener(EventType.MENU_SELECTED, this.menuSeleted);
   }
   menuSeleted = () => {
     this.setState({

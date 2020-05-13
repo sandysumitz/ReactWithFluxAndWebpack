@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
+
 import ClusterStore from "../../stores/ClusterStore";
 import ClusterActionCreator from "../../actionCreator/ClusterActionCreator";
+
+import EventType from "../../constants/eventType";
+import messages from "../../messges.json";
 
 class CreateCluster extends Component {
   constructor(props) {
@@ -25,6 +29,29 @@ class CreateCluster extends Component {
       enableMonitoring: false,
     };
   };
+  
+  clusterAdded = (clusterID) => {
+    this.setState({
+      nodeCount: "",
+      clusterName: "",
+      message: messages.CLUSTER.CLUSTER_CREATED + " : " + clusterID,
+    });
+  };
+
+  clusterAddingFailed = () => {
+    this.setState({
+      message: messages.CLUSTER.SOMETHING_WRONG,
+    });
+  }
+
+  componentDidMount() {
+    ClusterStore.addEventListener(EventType.CLUSTER_ITEM_ADDED, this.clusterAdded);
+    ClusterStore.addEventListener(EventType.ADD_CLUSTER_FAILED, this.clusterAddingFailed);
+  }
+  componentWillUnmount() {
+    ClusterStore.removeEventListener(EventType.CLUSTER_ITEM_ADDED, this.clusterAdded);
+    ClusterStore.removeEventListener(EventType.ADD_CLUSTER_FAILED, this.clusterAddingFailed);
+  }
 
   handleReset = (event) => {
     event.preventDefault();
@@ -42,33 +69,13 @@ class CreateCluster extends Component {
 
     if (!nodeCount || !clusterName) {
       this.setState({
-        message: "Please enter valid inputs",
+        message: messages.CLUSTER.FIELD_MISSING,
       });
       return false;
     }
 
-    const payload = {
-      nodeCount,
-      clusterName,
-      cloudSrvc,
-    };
-    axios
-      .post(`http://104.211.206.68:8080/api/v1/createClusterAsync`, { payload })
-      .then((res) => {
-        console.log(res);
-        console.log(res.data);
-        this.setState({
-          nodeCount: "",
-          clusterName: "",
-          message: `Cluster created successfully : ${res.data.clusterID}`,
-        });
-      })
-      .catch((e) => {
-        console.log("errorrrr", e);
-        this.setState({
-          message: `Something went wrong!!`,
-        });
-      });
+    ClusterActionCreator.addNewItem({ "nodeCount": this.state.nodeCount,
+      "clusterName": this.state.clusterName, "cloudSrvc": this.state.cloudSrvc });
   };
 
   render() {

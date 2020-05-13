@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import MenuActionCreator from "../../actionCreator/MenuActionCreator";
 import MenuStore from "../../stores/MenuStore";
 import Item from "./Item";
-import ActionType from "../../constants";
+import EventType from "../../constants/eventType";
 
 class MenuItem extends Component {
   constructor(props) {
@@ -12,10 +12,10 @@ class MenuItem extends Component {
     };
   }
   componentDidMount() {
-    MenuStore.addEventListener(ActionType.MENU_SELECTED, this.menuSeleted);
+    MenuStore.addEventListener(EventType.MENU_SELECTED, this.menuSeleted);
   }
   componentWillUnmount() {
-    MenuStore.removeEventListener(ActionType.MENU_SELECTED, this.menuSeleted);
+    MenuStore.removeEventListener(EventType.MENU_SELECTED, this.menuSeleted);
   }
   menuSeleted = () => {
     this.setState({
@@ -23,7 +23,6 @@ class MenuItem extends Component {
     });
   };
   hadleClick = (item) => {
-    console.log("handle click");
     MenuActionCreator.selectMenuItem(item);
   };
   render() {

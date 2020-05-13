@@ -1,9 +1,8 @@
 import Dispatcher from "../dispatcher";
-import ActionType from "../constants";
+import ActionType from "../constants/actionType";
 
 class MenuActionCreator {
   selectMenuItem = (item) => {
-    console.log("action creator");
     const action = {
       actionType: ActionType.MENU_SELECT,
       value: item,

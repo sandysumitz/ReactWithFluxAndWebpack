@@ -1,11 +1,11 @@
 import { EventEmitter } from "events";
 import Dispatcher from "../dispatcher";
-import ActionType from "../constants";
+import ActionType from "../constants/actionType";
+import EventType from "../constants/eventType";
 
 class MenuStore extends EventEmitter {
   constructor() {
     super();
-    console.log("store constructor");
     Dispatcher.register(this.registerToActions);
     this.items = [
       {
@@ -23,9 +23,8 @@ class MenuStore extends EventEmitter {
   registerToActions = (action) => {
     switch (action.actionType) {
       case ActionType.MENU_SELECT:
-        console.log("store case");
         this.updateMenu(action.value);
-        this.emit(ActionType.MENU_SELECTED);
+        this.emit(EventType.MENU_SELECTED);
         break;
       default:
         break;

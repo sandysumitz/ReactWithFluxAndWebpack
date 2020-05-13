@@ -1,0 +1,3 @@
+{
+    "CREATE_CLUSTER_ASYNC":"api/v1/createClusterAsync"
+}

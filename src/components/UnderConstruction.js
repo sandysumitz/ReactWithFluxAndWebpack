@@ -1,7 +1,7 @@
 import React, { Component, createFactory } from "react";
 import CreateCluster from "./cluster/CreateCluster";
 import MenuStore from "../stores/MenuStore";
-import ActionType from "../constants";
+import ActionType from "../constants/actionType";
 
 class UnderConstruction extends Component {
   render() {

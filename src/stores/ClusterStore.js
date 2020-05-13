@@ -1,20 +1,22 @@
 import { EventEmitter } from "events";
 import Dispatcher from "../dispatcher";
-import ActionType from "../constants";
+import ActionType from "../constants/actionType";
+import EventType from "../constants/eventType";
 
 class ClusterStore extends EventEmitter {
+  const 
   constructor() {
     super();
-    console.log("store constructor");
     Dispatcher.register(this.registerToActions);
     this.items = ["santhosh", "kumar"];
   }
   registerToActions = (action) => {
     switch (action.actionType) {
       case ActionType.ADD_NEW_ITEM:
-        console.log("store case");
-        this.items.push("sandy");
-        this.emit("addedNewItem");
+        this.emit(EventType.CLUSTER_ITEM_ADDED, action.value);
+        break;
+      case ActionType.ADD_CLUSTER_FAILED:
+        this.emit(EventType.ADD_CLUSTER_FAILED);
         break;
       default:
         break;
