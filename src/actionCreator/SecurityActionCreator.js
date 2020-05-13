@@ -7,11 +7,10 @@ import url from "../../url.json";
 
 class SecurityActionCreator {
   createSecurity = (parameterList) => {
-    WebApi.apiPost(config.API_URL + url.CREATE_SECURITY_ASYNC, parameterList)
+    WebApi.apiPost(config.API_URL + url.SAVE_CREDENTIALS, parameterList)
       .then((response) => {
         const action = {
-          actionType: ActionType.CREATE_SECURITY_SUCCESS,
-          value: response.data.clusterID,
+          actionType: ActionType.CREATE_SECURITY_SUCCESS
         };
         Dispatcher.dispatch(action);
       })

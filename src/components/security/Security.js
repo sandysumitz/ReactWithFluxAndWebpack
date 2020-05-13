@@ -28,7 +28,7 @@ class Security extends Component {
     this.setState({
       nodeCount: "",
       clusterName: "",
-      message: messages.SECURITY.SECURITY_CREATED + " : " + clusterID,
+      message: messages.SECURITY.SECURITY_CREATED
     });
   };
 
@@ -39,9 +39,9 @@ class Security extends Component {
   };
 
   componentDidMount() {
-    ClusterStore.addEventListener(
-      EventType.CREATE_CLUSTER_SUCCESS,
-      this.clusterAdded
+    SecurityStore.addEventListener(
+      EventType.CREATE_SECURITY_SUCCESS,
+      this.securityAdded
     );
     SecurityStore.addEventListener(
       EventType.CREATE_SECURITY_FAILED,
@@ -49,9 +49,9 @@ class Security extends Component {
     );
   }
   componentWillUnmount() {
-    ClusterStore.removeEventListener(
-      EventType.CREATE_CLUSTER_SUCCESS,
-      this.clusterAdded
+    SecurityStore.removeEventListener(
+      EventType.CREATE_SECURITY_SUCCESS,
+      this.securityAdded
     );
     SecurityStore.removeEventListener(
       EventType.CREATE_SECURITY_FAILED,
@@ -71,9 +71,9 @@ class Security extends Component {
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    const { nodeCount, clusterName, cloudSrvc } = this.state;
+    const { cloudSrvc, credentialName, subscriptionId, clientId, tenant, secret} = this.state;
 
-    if (!nodeCount || !clusterName) {
+    if (!cloudSrvc || !credentialName || !subscriptionId || !clientId || !tenant || !secret) {
       this.setState({
         message: messages.SECURITY.FIELD_MISSING,
       });
@@ -81,9 +81,15 @@ class Security extends Component {
     }
 //TODO PARAMETER
     SecurityActionCreator.createSecurity({
-      nodeCount: this.state.clientId,
-      clusterName: this.state.clusterName,
-      cloudSrvc: this.state.cloudSrvc,
+      userId: "123",//TODO - Lgged in user id, correct after development of login 
+      provider: this.state.cloudSrvc,
+      name: this.state.credentialName,
+      credntials: {
+        subscriptionID: this.state.subscriptionId,
+        clientID: this.state.clientId,
+        tenant: this.state.tenant,
+        secret: this.state.secret
+      }
     });
   };
 
