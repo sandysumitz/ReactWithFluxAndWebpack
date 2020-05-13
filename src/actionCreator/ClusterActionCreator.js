@@ -6,22 +6,21 @@ import config from "../../config.json";
 import url from "../../url.json";
 
 class ClusterActionCreator {
-  addNewItem = (parameterList) => {
-
+  createCluster = (parameterList) => {
     WebApi.apiPost(config.API_URL + url.CREATE_CLUSTER_ASYNC, parameterList)
-    .then ((response) => {
-      const action = {
-        actionType: ActionType.ADD_NEW_ITEM,
-        value: response.data.clusterID
-      };
-      Dispatcher.dispatch(action);
-      }) 
-    .catch ((reject) => {
-      const action = {
-        actionType: ActionType.ADD_CLUSTER_FAILED
-      };
-      Dispatcher.dispatch(action);
-    });
-  }
+      .then((response) => {
+        const action = {
+          actionType: ActionType.CREATE_CLUSTER,
+          value: response.data.clusterID,
+        };
+        Dispatcher.dispatch(action);
+      })
+      .catch((reject) => {
+        const action = {
+          actionType: ActionType.CREATE_CLUSTER_FAILED,
+        };
+        Dispatcher.dispatch(action);
+      });
+  };
 }
 export default new ClusterActionCreator();

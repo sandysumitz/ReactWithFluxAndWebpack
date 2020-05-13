@@ -4,7 +4,7 @@ import ActionType from "../constants/actionType";
 import EventType from "../constants/eventType";
 
 class ClusterStore extends EventEmitter {
-  const 
+  const;
   constructor() {
     super();
     Dispatcher.register(this.registerToActions);
@@ -12,11 +12,11 @@ class ClusterStore extends EventEmitter {
   }
   registerToActions = (action) => {
     switch (action.actionType) {
-      case ActionType.ADD_NEW_ITEM:
-        this.emit(EventType.CLUSTER_ITEM_ADDED, action.value);
+      case ActionType.CREATE_CLUSTER:
+        this.emit(EventType.CLUSTER_ITEM_SUCCESS, action.value);
         break;
-      case ActionType.ADD_CLUSTER_FAILED:
-        this.emit(EventType.ADD_CLUSTER_FAILED);
+      case ActionType.CREATE_CLUSTER_FAILED:
+        this.emit(EventType.CREATE_CLUSTER_FAILED);
         break;
       default:
         break;

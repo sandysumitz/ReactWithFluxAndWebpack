@@ -29,7 +29,7 @@ class CreateCluster extends Component {
       enableMonitoring: false,
     };
   };
-  
+
   clusterAdded = (clusterID) => {
     this.setState({
       nodeCount: "",
@@ -42,15 +42,27 @@ class CreateCluster extends Component {
     this.setState({
       message: messages.CLUSTER.SOMETHING_WRONG,
     });
-  }
+  };
 
   componentDidMount() {
-    ClusterStore.addEventListener(EventType.CLUSTER_ITEM_ADDED, this.clusterAdded);
-    ClusterStore.addEventListener(EventType.ADD_CLUSTER_FAILED, this.clusterAddingFailed);
+    ClusterStore.addEventListener(
+      EventType.CLUSTER_ITEM_SUCCESS,
+      this.clusterAdded
+    );
+    ClusterStore.addEventListener(
+      EventType.CREATE_CLUSTER_FAILED,
+      this.clusterAddingFailed
+    );
   }
   componentWillUnmount() {
-    ClusterStore.removeEventListener(EventType.CLUSTER_ITEM_ADDED, this.clusterAdded);
-    ClusterStore.removeEventListener(EventType.ADD_CLUSTER_FAILED, this.clusterAddingFailed);
+    ClusterStore.removeEventListener(
+      EventType.CLUSTER_ITEM_SUCCESS,
+      this.clusterAdded
+    );
+    ClusterStore.removeEventListener(
+      EventType.CREATE_CLUSTER_FAILED,
+      this.clusterAddingFailed
+    );
   }
 
   handleReset = (event) => {
@@ -74,8 +86,11 @@ class CreateCluster extends Component {
       return false;
     }
 
-    ClusterActionCreator.addNewItem({ "nodeCount": this.state.nodeCount,
-      "clusterName": this.state.clusterName, "cloudSrvc": this.state.cloudSrvc });
+    ClusterActionCreator.createCluster({
+      nodeCount: this.state.nodeCount,
+      clusterName: this.state.clusterName,
+      cloudSrvc: this.state.cloudSrvc,
+    });
   };
 
   render() {

@@ -18,6 +18,11 @@ class MenuStore extends EventEmitter {
         name: "Cluster Management",
         isActive: false,
       },
+      {
+        id: 3,
+        name: "Security",
+        isActive: false,
+      },
     ];
   }
   registerToActions = (action) => {
