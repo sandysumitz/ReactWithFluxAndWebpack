@@ -41,7 +41,7 @@ class Security extends Component {
 
   componentDidMount() {
     ClusterStore.addEventListener(
-      EventType.CLUSTER_ITEM_SUCCESS,
+      EventType.CREATE_CLUSTER_SUCCESS,
       this.clusterAdded
     );
     ClusterStore.addEventListener(
@@ -51,7 +51,7 @@ class Security extends Component {
   }
   componentWillUnmount() {
     ClusterStore.removeEventListener(
-      EventType.CLUSTER_ITEM_SUCCESS,
+      EventType.CREATE_CLUSTER_SUCCESS,
       this.clusterAdded
     );
     ClusterStore.removeEventListener(
