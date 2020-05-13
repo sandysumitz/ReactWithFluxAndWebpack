@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
 
-import ClusterStore from "../../stores/ClusterStore";
-import ClusterActionCreator from "../../actionCreator/ClusterActionCreator";
+import SecurityStore from "../../stores/SecurityStore";
+import SecurityActionCreator from "../../actionCreator/SecurityActionCreator";
 
 import EventType from "../../constants/eventType";
 import messages from "../../messges.json";
@@ -25,17 +24,17 @@ class Security extends Component {
     };
   };
 
-  clusterAdded = (clusterID) => {
+  securityAdded = (clusterID) => {
     this.setState({
       nodeCount: "",
       clusterName: "",
-      message: messages.CLUSTER.CLUSTER_CREATED + " : " + clusterID,
+      message: messages.SECURITY.SECURITY_CREATED + " : " + clusterID,
     });
   };
 
-  clusterAddingFailed = () => {
+  securityAddingFailed = () => {
     this.setState({
-      message: messages.CLUSTER.SOMETHING_WRONG,
+      message: messages.SECURITY.SOMETHING_WRONG,
     });
   };
 
@@ -44,9 +43,9 @@ class Security extends Component {
       EventType.CREATE_CLUSTER_SUCCESS,
       this.clusterAdded
     );
-    ClusterStore.addEventListener(
-      EventType.CREATE_CLUSTER_FAILED,
-      this.clusterAddingFailed
+    SecurityStore.addEventListener(
+      EventType.CREATE_SECURITY_FAILED,
+      this.securityAddingFailed
     );
   }
   componentWillUnmount() {
@@ -54,9 +53,9 @@ class Security extends Component {
       EventType.CREATE_CLUSTER_SUCCESS,
       this.clusterAdded
     );
-    ClusterStore.removeEventListener(
-      EventType.CREATE_CLUSTER_FAILED,
-      this.clusterAddingFailed
+    SecurityStore.removeEventListener(
+      EventType.CREATE_SECURITY_FAILED,
+      this.securityAddingFailed
     );
   }
 
@@ -76,13 +75,13 @@ class Security extends Component {
 
     if (!nodeCount || !clusterName) {
       this.setState({
-        message: messages.CLUSTER.FIELD_MISSING,
+        message: messages.SECURITY.FIELD_MISSING,
       });
       return false;
     }
-
-    ClusterActionCreator.createCluster({
-      nodeCount: this.state.nodeCount,
+//TODO PARAMETER
+    SecurityActionCreator.createSecurity({
+      nodeCount: this.state.clientId,
       clusterName: this.state.clusterName,
       cloudSrvc: this.state.cloudSrvc,
     });
