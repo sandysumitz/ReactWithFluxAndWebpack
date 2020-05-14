@@ -7,15 +7,15 @@ class Item extends Component {
   }
   generateOptions = () => {
     const { data } = this.props;
-    console.log("data.options :", data.options);
-    const options = data.options.map((option) => {
+    console.log("data.options :", data);
+    const options = data.map((option) => {
       return <option value={option.value}>{option.description}</option>;
     });
     return options;
   };
   render() {
     const options = this.generateOptions();
-    const { data, onChange } = this.props;
+    const { data, onChange, value } = this.props;
     return (
       <div className="form-group">
         <label className="col-sm-12">{data.header}</label>
@@ -23,9 +23,10 @@ class Item extends Component {
           <select
             name={data.name}
             className="form-control form-control-line"
-            value={data.value}
+            value={value}
             onChange={onChange}
           >
+            <option value="">Select</option>
             {options}
           </select>
         </div>
