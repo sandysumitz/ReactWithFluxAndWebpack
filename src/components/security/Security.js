@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
 
-import ClusterStore from "../../stores/ClusterStore";
-import ClusterActionCreator from "../../actionCreator/ClusterActionCreator";
+import SecurityStore from "../../stores/SecurityStore";
+import SecurityActionCreator from "../../actionCreator/SecurityActionCreator";
 
 import EventType from "../../constants/eventType";
 import messages from "../../messges.json";
@@ -25,38 +24,38 @@ class Security extends Component {
     };
   };
 
-  clusterAdded = (clusterID) => {
+  securityAdded = (clusterID) => {
     this.setState({
       nodeCount: "",
       clusterName: "",
-      message: messages.CLUSTER.CLUSTER_CREATED + " : " + clusterID,
+      message: messages.SECURITY.SECURITY_CREATED
     });
   };
 
-  clusterAddingFailed = () => {
+  securityAddingFailed = () => {
     this.setState({
-      message: messages.CLUSTER.SOMETHING_WRONG,
+      message: messages.SECURITY.SOMETHING_WRONG,
     });
   };
 
   componentDidMount() {
-    ClusterStore.addEventListener(
-      EventType.CREATE_CLUSTER_SUCCESS,
-      this.clusterAdded
+    SecurityStore.addEventListener(
+      EventType.CREATE_SECURITY_SUCCESS,
+      this.securityAdded
     );
-    ClusterStore.addEventListener(
-      EventType.CREATE_CLUSTER_FAILED,
-      this.clusterAddingFailed
+    SecurityStore.addEventListener(
+      EventType.CREATE_SECURITY_FAILED,
+      this.securityAddingFailed
     );
   }
   componentWillUnmount() {
-    ClusterStore.removeEventListener(
-      EventType.CREATE_CLUSTER_SUCCESS,
-      this.clusterAdded
+    SecurityStore.removeEventListener(
+      EventType.CREATE_SECURITY_SUCCESS,
+      this.securityAdded
     );
-    ClusterStore.removeEventListener(
-      EventType.CREATE_CLUSTER_FAILED,
-      this.clusterAddingFailed
+    SecurityStore.removeEventListener(
+      EventType.CREATE_SECURITY_FAILED,
+      this.securityAddingFailed
     );
   }
 
@@ -72,19 +71,25 @@ class Security extends Component {
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    const { nodeCount, clusterName, cloudSrvc } = this.state;
+    const { cloudSrvc, credentialName, subscriptionId, clientId, tenant, secret} = this.state;
 
-    if (!nodeCount || !clusterName) {
+    if (!cloudSrvc || !credentialName || !subscriptionId || !clientId || !tenant || !secret) {
       this.setState({
-        message: messages.CLUSTER.FIELD_MISSING,
+        message: messages.SECURITY.FIELD_MISSING,
       });
       return false;
     }
-
-    ClusterActionCreator.createCluster({
-      nodeCount: this.state.nodeCount,
-      clusterName: this.state.clusterName,
-      cloudSrvc: this.state.cloudSrvc,
+//TODO PARAMETER
+    SecurityActionCreator.createSecurity({
+      userId: "123",//TODO - Lgged in user id, correct after development of login 
+      provider: this.state.cloudSrvc,
+      name: this.state.credentialName,
+      credntials: {
+        subscriptionID: this.state.subscriptionId,
+        clientID: this.state.clientId,
+        tenant: this.state.tenant,
+        secret: this.state.secret
+      }
     });
   };
 
