@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import DropDown from "../generic/Dropdown";
 import ClusterStore from "../../stores/ClusterStore";
+import DashboardStore from "../../stores/DashBoardStore";
 import ClusterActionCreator from "../../actionCreator/ClusterActionCreator";
 
 import EventType from "../../constants/eventType";
@@ -34,7 +35,7 @@ class CreateCluster extends Component {
       dashboard: "",
       enableLogging: false,
       enableMonitoring: false,
-      loading: true,
+      loading: true
     };
   };
 
@@ -46,19 +47,19 @@ class CreateCluster extends Component {
     });
   };
 
-  lookupOptionsDataLoaded = () => {
-    const provider = this.getDropdownData("Provider", "cloudSrvc");
-    const masterInstTypes = this.getDropdownData(
+  loadLookupOptionsData = () => {
+    const provider = DashboardStore.getDropdownData("Provider", "cloudSrvc");
+    const masterInstTypes = DashboardStore.getDropdownData(
       "Master Instance Type",
       "masterSize"
     );
-    const workerInstTypes = this.getDropdownData(
+    const workerInstTypes = DashboardStore.getDropdownData(
       "Worker Instance Type",
       "nodeSize"
     );
-    const imageName = this.getDropdownData("Image Name", "imageName");
-    const dashboard = this.getDropdownData("Dashboard", "dashboard");
-    const credentials = this.getDropdownData("Credentials", "credentials");
+    const imageName = DashboardStore.getDropdownData("Image Name", "imageName");
+    const dashboard = DashboardStore.getDropdownData("Dashboard", "dashboard");
+    const credentials = DashboardStore.getDropdownData("Credentials", "credentials");
 
     const lookupData = {
       provider,
@@ -82,7 +83,8 @@ class CreateCluster extends Component {
   };
 
   componentDidMount() {
-    ClusterActionCreator.loadOptionsData();
+    this.loadLookupOptionsData();
+
     ClusterStore.addEventListener(
       EventType.CREATE_CLUSTER_SUCCESS,
       this.clusterAdded
@@ -90,10 +92,6 @@ class CreateCluster extends Component {
     ClusterStore.addEventListener(
       EventType.CREATE_CLUSTER_FAILED,
       this.clusterAddingFailed
-    );
-    ClusterStore.addEventListener(
-      EventType.GET_LOOKUP_OPTIONS_DATA_SUCCESS,
-      this.lookupOptionsDataLoaded
     );
   }
   componentWillUnmount() {
@@ -104,10 +102,6 @@ class CreateCluster extends Component {
     ClusterStore.removeEventListener(
       EventType.CREATE_CLUSTER_FAILED,
       this.clusterAddingFailed
-    );
-    ClusterStore.removeEventListener(
-      EventType.GET_LOOKUP_OPTIONS_DATA_SUCCESS,
-      this.lookupOptionsDataLoaded
     );
   }
 
@@ -125,95 +119,29 @@ class CreateCluster extends Component {
     const { nodeCount, clusterName, cloudSrvc } = this.state;
     console.log("this.state --- ", this.state);
 
-    // if (!nodeCount || !clusterName) {
-    //   this.setState({
-    //     message: messages.CLUSTER.FIELD_MISSING,
-    //   });
-    //   return false;
-    // }
-
-    // ClusterActionCreator.createCluster({
-    //   nodeCount: this.state.nodeCount,
-    //   clusterName: this.state.clusterName,
-    //   cloudSrvc: this.state.cloudSrvc,
-    // });
-  };
-  getDropdownData = (header, name, value) => {
-    let options = [];
-    const optionsData = this.getOptions();
-    switch (header) {
-      case "Provider":
-        const _filter = optionsData.find((option) => {
-          return Object.keys(option)[0] === "provider";
-        });
-        options = _filter["provider"];
-        console.log("options", options);
-        break;
-      case "Master Instance Type":
-        const _filter1 = optionsData.find((option) => {
-          return Object.keys(option)[0] === "masterInstTypes";
-        });
-        options = _filter1["masterInstTypes"];
-        console.log("options", options);
-        break;
-      case "Worker Instance Type":
-        const _filter2 = optionsData.find((option) => {
-          return Object.keys(option)[0] === "workerInstTypes";
-        });
-        options = _filter2["workerInstTypes"];
-        console.log("options", options);
-        break;
-      case "Image Name":
-        const _filter3 = optionsData.find((option) => {
-          return Object.keys(option)[0] === "imageName";
-        });
-        options = _filter3["imageName"];
-        console.log("options", options);
-        break;
-      case "Dashboard":
-        const _filter4 = optionsData.find((option) => {
-          return Object.keys(option)[0] === "dashboard";
-        });
-        options = _filter4["dashboard"];
-        console.log("options", options);
-        break;
-      case "Credentials":
-        const _filter5 = optionsData.find((option) => {
-          return Object.keys(option)[0] === "credentials";
-        });
-        options = _filter5 && _filter5["credentials"];
-        console.log("options", options);
-        break;
+    if (!nodeCount || !clusterName) {
+      this.setState({
+        message: messages.CLUSTER.FIELD_MISSING,
+      });
+      return false;
     }
 
-    return {
-      header,
-      name,
-      value,
-      options,
-    };
-  };
-
-  getOptions = () => {
-    const options = ClusterStore.lookupOptionData;
-    const data = Object.keys(options).map((_key) => {
-      const item = options[_key];
-      console.log(_key);
-      return {
-        [_key]: Object.keys(item).map((key) => {
-          return {
-            description: item[key],
-            value: key,
-          };
-        }),
-      };
+    ClusterActionCreator.createCluster({
+      cloudSrv: this.state.cloudSrvc,
+      masterCount: this.state.masterCount,
+      nodeCount: this.state.nodeCount,
+      masterSize: this.state.masterSize,
+      nodeSize: this.state.nodeSize,
+      clusterName: this.state.clusterName,
+      imageName: this.state.imageName,
+      kubeDashboard: this.state.dashboard,
+      loggingEnabled: this.state.enableLogging,
+      monitoringEnabled: this.state.monitoringEnabled,
+      credentialName: this.state.credentials
     });
-    console.log("providerdata :", data);
-    return data;
   };
 
   render() {
-    //this.getOptions();
     console.log("this.state---- render", this.state);
     return (
       <div className="container-fluid">

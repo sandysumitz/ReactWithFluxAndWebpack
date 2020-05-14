@@ -1,9 +1,12 @@
 import React, { Component, createFactory } from "react";
-import CreateCluster from "./cluster/CreateCluster";
-import MenuStore from "../stores/MenuStore";
-import ActionType from "../constants/actionType";
+import DashboardActionCreator from "../actionCreator/DashboardActionCreator";
 
 class UnderConstruction extends Component {
+
+  componentDidMount() {
+    DashboardActionCreator.loadOptionsData();
+  }
+  
   render() {
     return (
       <div className="container-fluid">
