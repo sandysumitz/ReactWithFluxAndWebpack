@@ -1,4 +1,5 @@
 {
     "CREATE_CLUSTER_ASYNC": "api/v1/createClusterAsync",
-    "LOOKUP_OPTIONS_DATA": "api/v1/lookupOptionsData"
+    "LOOKUP_OPTIONS_DATA": "api/v1/lookupOptionsData",
+    "SAVE_CREDENTIALS":"api/v1/saveCredentials"
 }
