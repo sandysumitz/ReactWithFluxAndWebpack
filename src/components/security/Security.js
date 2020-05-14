@@ -148,7 +148,7 @@ class Security extends Component {
                       <label className="col-md-12">Subscription ID</label>
                       <div className="col-md-12">
                         <input
-                          type="text"
+                          type="password"
                           name="subscriptionId"
                           required
                           value={this.state.subscriptionId}
@@ -162,7 +162,7 @@ class Security extends Component {
                       <label className="col-md-12">Client ID</label>
                       <div className="col-md-12">
                         <input
-                          type="text"
+                          type="password"
                           name="clientId"
                           required
                           value={this.state.clientId}
@@ -176,7 +176,7 @@ class Security extends Component {
                       <label className="col-md-12">Tenant</label>
                       <div className="col-md-12">
                         <input
-                          type="text"
+                          type="password"
                           name="tenant"
                           required
                           value={this.state.tenant}
@@ -190,7 +190,7 @@ class Security extends Component {
                       <label className="col-md-12">Secret</label>
                       <div className="col-md-12">
                         <input
-                          type="text"
+                          type="password"
                           name="secret"
                           required
                           value={this.state.secret}
