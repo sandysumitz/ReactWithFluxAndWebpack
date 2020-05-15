@@ -4,12 +4,11 @@ import ActionType from "../constants/actionType";
 import EventType from "../constants/eventType";
 
 class ClusterStore extends EventEmitter {
-  const;
+  
   constructor() {
     super();
     Dispatcher.register(this.registerToActions);
     this.items = ["santhosh", "kumar"];
-    this.lookupOptionData = {};
   }
   registerToActions = (action) => {
     switch (action.actionType) {
@@ -19,16 +18,16 @@ class ClusterStore extends EventEmitter {
       case ActionType.CREATE_CLUSTER_FAILED:
         this.emit(EventType.CREATE_CLUSTER_FAILED);
         break;
-      case ActionType.GET_LOOKUP_OPTIONS_DATA:
-        this.lookupOptionData = action.value;
-        this.emit(
-          EventType.GET_LOOKUP_OPTIONS_DATA_SUCCESS,
-          this.lookupOptionData
-        );
-        break;
-      case ActionType.GET_LOOKUP_OPTIONS_DATA_FAILED:
-        this.emit(EventType.CREATE_CLUSTER_FAILED);
-        break;
+      // case ActionType.GET_LOOKUP_OPTIONS_DATA:
+      //   this.lookupOptionData = action.value;
+      //   this.emit(
+      //     EventType.GET_LOOKUP_OPTIONS_DATA_SUCCESS,
+      //     this.lookupOptionData
+      //   );
+      //   break;
+      // case ActionType.GET_LOOKUP_OPTIONS_DATA_FAILED:
+      //   this.emit(EventType.CREATE_CLUSTER_FAILED);
+      //   break;
       default:
         break;
     }

@@ -2,6 +2,9 @@ import React, { Component } from "react";
 
 import SecurityStore from "../../stores/SecurityStore";
 import SecurityActionCreator from "../../actionCreator/SecurityActionCreator";
+import DashboardStore from "../../stores/DashBoardStore";
+
+import DropDown from "../../components/generic/Dropdown";
 
 import EventType from "../../constants/eventType";
 import messages from "../../messges.json";
@@ -10,6 +13,7 @@ class Security extends Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
+    this.state.provider =[];
   }
 
   getInitialState = () => {
@@ -21,6 +25,7 @@ class Security extends Component {
       clientId: "",
       tenant: "",
       secret: "",
+      loading: true
     };
   };
 
@@ -37,8 +42,18 @@ class Security extends Component {
       message: messages.SECURITY.SOMETHING_WRONG,
     });
   };
+  
+  loadLookupOptionsData = () => {
+    const provider = DashboardStore.getDropdownData("Provider", "cloudSrvc");
+
+    this.setState({
+      provider,
+      loading: false
+    });
+  }
 
   componentDidMount() {
+    this.loadLookupOptionsData();
     SecurityStore.addEventListener(
       EventType.CREATE_SECURITY_SUCCESS,
       this.securityAdded
@@ -109,20 +124,12 @@ class Security extends Component {
                 <h4 className="card-title">Security</h4>
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
-                    <div className="form-group">
-                      <label className="col-sm-12">Provider</label>
-                      <div className="col-sm-12">
-                        <select
-                          name="cloudSrvc"
-                          className="form-control form-control-line"
-                          value={this.state.cloudSrvc}
-                          onChange={this.handleOnChange}
-                        >
-                          <option value="Azure">Azure - Native</option>
-                          <option value="AKS">AKS</option>
-                        </select>
-                      </div>
-                    </div>
+                  { this.state.loading ? null : (
+                      <DropDown
+                        data={this.state.provider}
+                        value={this.state.cloudSrvc}
+                        onChange={this.handleOnChange}
+                      />) }
                     <div className="form-group">
                       <label className="col-md-12">Credential Name</label>
                       <div className="col-md-12">
@@ -141,7 +148,7 @@ class Security extends Component {
                       <label className="col-md-12">Subscription ID</label>
                       <div className="col-md-12">
                         <input
-                          type="text"
+                          type="password"
                           name="subscriptionId"
                           required
                           value={this.state.subscriptionId}
@@ -155,7 +162,7 @@ class Security extends Component {
                       <label className="col-md-12">Client ID</label>
                       <div className="col-md-12">
                         <input
-                          type="text"
+                          type="password"
                           name="clientId"
                           required
                           value={this.state.clientId}
@@ -169,7 +176,7 @@ class Security extends Component {
                       <label className="col-md-12">Tenant</label>
                       <div className="col-md-12">
                         <input
-                          type="text"
+                          type="password"
                           name="tenant"
                           required
                           value={this.state.tenant}
@@ -183,7 +190,7 @@ class Security extends Component {
                       <label className="col-md-12">Secret</label>
                       <div className="col-md-12">
                         <input
-                          type="text"
+                          type="password"
                           name="secret"
                           required
                           value={this.state.secret}
