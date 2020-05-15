@@ -11,7 +11,7 @@ class Item extends Component {
     if (!data) {
       return null;
     }
-    const options = data.map((option) => {
+    const options = data.options.map((option) => {
       return <option value={option.value}>{option.description}</option>;
     });
     return options;

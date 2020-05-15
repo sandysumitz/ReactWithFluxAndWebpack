@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import DropDown from "../generic/Dropdown";
+import Loader from "../loader/Loader";
 import ClusterStore from "../../stores/ClusterStore";
 import DashboardStore from "../../stores/DashBoardStore";
 import ClusterActionCreator from "../../actionCreator/ClusterActionCreator";
@@ -35,7 +36,7 @@ class CreateCluster extends Component {
       dashboard: "",
       enableLogging: false,
       enableMonitoring: false,
-      loading: true
+      loading: true,
     };
   };
 
@@ -59,7 +60,10 @@ class CreateCluster extends Component {
     );
     const imageName = DashboardStore.getDropdownData("Image Name", "imageName");
     const dashboard = DashboardStore.getDropdownData("Dashboard", "dashboard");
-    const credentials = DashboardStore.getDropdownData("Credentials", "credentials");
+    const credentials = DashboardStore.getDropdownData(
+      "Credentials",
+      "credentials"
+    );
 
     const lookupData = {
       provider,
@@ -137,7 +141,7 @@ class CreateCluster extends Component {
       kubeDashboard: this.state.dashboard,
       loggingEnabled: this.state.enableLogging,
       monitoringEnabled: this.state.monitoringEnabled,
-      credentialName: this.state.credentials
+      credentialName: this.state.credentials,
     });
   };
 
@@ -156,7 +160,9 @@ class CreateCluster extends Component {
               <div className="card-block">
                 <h4 className="card-title">Cluster Management</h4>
                 <div className="table-responsive">
-                  {this.state.loading ? null : (
+                  {this.state.loading ? (
+                    <Loader />
+                  ) : (
                     <form className="form-horizontal form-material">
                       <DropDown
                         data={this.state.lookupData.provider}
