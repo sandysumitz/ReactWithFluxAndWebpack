@@ -18,7 +18,7 @@ class Item extends Component {
   };
   render() {
     const options = this.generateOptions();
-    const { data, onChange, value } = this.props;
+    const { data, onChange, value, mandatory} = this.props;
     if (!data) {
       return null;
     }
@@ -28,7 +28,8 @@ class Item extends Component {
         <div className="col-sm-12">
           <select
             name={data.name}
-            className="form-control form-control-line"
+            className={classNames("form-control form-control-line",
+            mandatory ? "mandatory": "")}
             value={value}
             onChange={onChange}
           >

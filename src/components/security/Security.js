@@ -9,6 +9,8 @@ import DropDown from "../../components/generic/Dropdown";
 import EventType from "../../constants/eventType";
 import messages from "../../messges.json";
 
+import classNames from "classnames";
+
 class Security extends Component {
   constructor(props) {
     super(props);
@@ -19,13 +21,19 @@ class Security extends Component {
   getInitialState = () => {
     return {
       message: "",
-      cloudSrvc: "Azure",
+      cloudSrvc: "",
       credentialName: "LOB Azure Ops Credentials",
       subscriptionId: "",
       clientId: "",
       tenant: "",
       secret: "",
-      loading: true
+      loading: true,
+      cloudSrvcMissing: false,
+      credentialNameMissing: false,
+      subscriptionIdMissing: false,
+      clientIdMissing: false,
+      tenantMissing: false,
+      secretMissing: false
     };
   };
 
@@ -82,6 +90,7 @@ class Security extends Component {
     console.log("event.target :", event.target.name);
     this.setState({
       [event.target.name]: event.target.value,
+      [event.target.name+"Missing"]: false
     });
   };
   handleSubmit = (event) => {
@@ -91,6 +100,12 @@ class Security extends Component {
     if (!cloudSrvc || !credentialName || !subscriptionId || !clientId || !tenant || !secret) {
       this.setState({
         message: messages.SECURITY.FIELD_MISSING,
+        cloudSrvcMissing: !cloudSrvc,
+        credentialNameMissing: !credentialName,
+        subscriptionIdMissing: !subscriptionId,
+        clientIdMissing: !clientId,
+        tenantMissing: !tenant,
+        secretMissing: !secret
       });
       return false;
     }
@@ -129,9 +144,10 @@ class Security extends Component {
                         data={this.state.provider}
                         value={this.state.cloudSrvc}
                         onChange={this.handleOnChange}
+                        mandatory={this.state.cloudSrvcMissing}
                       />) }
                     <div className="form-group">
-                      <label className="col-md-12">Credential Name</label>
+                      <label className="col-md-12 required">Credential Name</label>
                       <div className="col-md-12">
                         <input
                           type="text"
@@ -139,13 +155,14 @@ class Security extends Component {
                           required
                           value={this.state.credentialName}
                           onChange={this.handleOnChange}
-                          className="form-control form-control-line"
+                          className={classNames("form-control form-control-line",
+                              this.state.credentialNameMissing ? "mandatory": "")}
                         />
                       </div>
                     </div>
 
                     <div className="form-group">
-                      <label className="col-md-12">Subscription ID</label>
+                      <label className="col-md-12 required">Subscription ID</label>
                       <div className="col-md-12">
                         <input
                           type="password"
@@ -153,13 +170,14 @@ class Security extends Component {
                           required
                           value={this.state.subscriptionId}
                           onChange={this.handleOnChange}
-                          className="form-control form-control-line"
+                          className={classNames("form-control form-control-line",
+                          this.state.subscriptionIdMissing ? "mandatory": "")}
                         />
                       </div>
                     </div>
 
                     <div className="form-group">
-                      <label className="col-md-12">Client ID</label>
+                      <label className="col-md-12 required">Client ID</label>
                       <div className="col-md-12">
                         <input
                           type="password"
@@ -167,13 +185,14 @@ class Security extends Component {
                           required
                           value={this.state.clientId}
                           onChange={this.handleOnChange}
-                          className="form-control form-control-line"
+                          className={classNames("form-control form-control-line",
+                          this.state.clientIdMissing ? "mandatory": "")}
                         />
                       </div>
                     </div>
 
                     <div className="form-group">
-                      <label className="col-md-12">Tenant</label>
+                      <label className="col-md-12 required">Tenant</label>
                       <div className="col-md-12">
                         <input
                           type="password"
@@ -181,13 +200,14 @@ class Security extends Component {
                           required
                           value={this.state.tenant}
                           onChange={this.handleOnChange}
-                          className="form-control form-control-line"
+                          className={classNames("form-control form-control-line",
+                          this.state.tenantMissing ? "mandatory": "")}
                         />
                       </div>
                     </div>
 
                     <div className="form-group">
-                      <label className="col-md-12">Secret</label>
+                      <label className="col-md-12 required">Secret</label>
                       <div className="col-md-12">
                         <input
                           type="password"
@@ -195,7 +215,8 @@ class Security extends Component {
                           required
                           value={this.state.secret}
                           onChange={this.handleOnChange}
-                          className="form-control form-control-line"
+                          className={classNames("form-control form-control-line",
+                          this.state.secretMissing ? "mandatory": "")}
                         />
                       </div>
                     </div>

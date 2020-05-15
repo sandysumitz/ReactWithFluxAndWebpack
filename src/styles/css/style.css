@@ -3695,6 +3695,18 @@ Form Material page
   float: none;
 }
 
+.form-material .form-control.mandatory {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fb0000), to(#fb0000)), -webkit-gradient(linear, left top, left bottom, from(#fb0000), to(#fb0000));
+  background-image: -webkit-linear-gradient(#fb0000, #fb0000), -webkit-linear-gradient(#fb0000, #fb0000);
+  background-image: -o-linear-gradient(#fb0000, #fb0000), -o-linear-gradient(#fb0000, #fb0000);
+  background-image: linear-gradient(#fb0000, #fb0000), linear-gradient(#fb0000, #fb0000);
+  border: 0 none;
+  border-radius: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  float: none;
+}
+
 .form-material .form-control.focus,
 .form-material .form-control:focus {
   background-size: 100% 2px, 100% 1px;
@@ -10290,4 +10302,9 @@ pre {
 
 .switch label input[type=checkbox]:checked+.lever.switch-col-white:after {
   background-color: #ffffff;
+}
+
+.required:after{
+  content: "*";
+  color: red
 }

@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import classNames from "classnames";
+
 import DropDown from "../generic/Dropdown";
 import Loader from "../loader/Loader";
 import ClusterStore from "../../stores/ClusterStore";
@@ -37,6 +39,10 @@ class CreateCluster extends Component {
       enableLogging: true,
       enableMonitoring: false,
       loading: true,
+      cloudSrvcMissing: false,
+      nodeCountMissing: false,
+      clusterNameMissing: false,
+      credentialsMissing: false
     };
   };
 
@@ -116,6 +122,7 @@ class CreateCluster extends Component {
   handleOnChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
+      [event.target.name+"Missing"]: false
     });
   };
   handleOnProviderChange = (event) => {
@@ -137,12 +144,16 @@ class CreateCluster extends Component {
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    const { nodeCount, clusterName, cloudSrvc } = this.state;
+    const { nodeCount, clusterName, cloudSrvc, credentialName } = this.state;
     console.log("this.state --- ", this.state);
 
-    if (!nodeCount || !clusterName) {
+    if (!nodeCount || !clusterName || !cloudSrvc) {// || !credentialName) { TODO - correct when lookupoption api return the value
       this.setState({
         message: messages.CLUSTER.FIELD_MISSING,
+        nodeCountMissing: !nodeCount,
+        cloudSrvcMissing: !cloudSrvc,
+        clusterNameMissing: !clusterName,
+        // credentialsMissing: !credentialName -- TODO: waiting for api correction
       });
       return false;
     }
@@ -184,9 +195,10 @@ class CreateCluster extends Component {
                       data={this.state.lookupData.provider}
                       value={this.state.cloudSrvc}
                       onChange={this.handleOnProviderChange}
+                      mandatory={this.state.cloudSrvcMissing}
                     />
                     <div className="form-group">
-                      <label className="col-md-12">Cluster Name</label>
+                      <label className="col-md-12 required">Cluster Name</label>
                       <div className="col-md-12">
                         <input
                           type="text"
@@ -194,12 +206,13 @@ class CreateCluster extends Component {
                           required
                           value={this.state.clusterName}
                           onChange={this.handleOnChange}
-                          className="form-control form-control-line"
+                          className={classNames("form-control form-control-line",
+                          this.state.clusterNameMissing ? "mandatory": "")}
                         />
                       </div>
                     </div>
                     <div className="form-group">
-                      <label className="col-md-12">
+                      <label className="col-md-12 required">
                         Number of Worker Nodes
                       </label>
                       <div className="col-md-12">
@@ -215,7 +228,7 @@ class CreateCluster extends Component {
                     </div>
                     {this.state.cloudSrvc === "Azure_native" ? (
                       <div className="form-group">
-                        <label className="col-md-12">
+                        <label className="col-md-12 required">
                           Number of Master Nodes
                         </label>
                         <div className="col-md-12">
@@ -223,9 +236,10 @@ class CreateCluster extends Component {
                             type="text"
                             required
                             disabled
-                            value={this.state.masterCount}
-                            onChange={this.handleNodeChange}
-                            className="form-control form-control-line"
+                            value={this.state.nodeCount}
+                            onChange={this.handleOnChange}
+                            className={classNames("form-control form-control-line",
+                            this.state.nodeCountMissing ? "mandatory": "")}
                           />
                         </div>
                       </div>
@@ -304,6 +318,7 @@ class CreateCluster extends Component {
                       data={this.state.lookupData.credentials}
                       value={this.state.credentials}
                       onChange={this.handleOnChange}
+                      mandatory={this.state.credentialsMissing}
                     />
 
                     <div className="form-group float-left">
