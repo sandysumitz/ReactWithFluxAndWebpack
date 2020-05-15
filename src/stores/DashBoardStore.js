@@ -8,22 +8,21 @@ class DashBoardStore extends EventEmitter {
     super();
     Dispatcher.register(this.registerToActions);
     this.lookupOptionData = {};
-    
   }
   registerToActions = (action) => {
-    switch (action.actionType) {      
-        case ActionType.GET_LOOKUP_OPTIONS_DATA:
-            this.lookupOptionData = action.value;
-            this.emit(
-              EventType.GET_LOOKUP_OPTIONS_DATA_SUCCESS,
-              this.lookupOptionData
-            );
-            break;
-          case ActionType.GET_LOOKUP_OPTIONS_DATA_FAILED:
-            this.emit(EventType.CREATE_CLUSTER_FAILED);
-            break;
-          default:
-            break;
+    switch (action.actionType) {
+      case ActionType.GET_LOOKUP_OPTIONS_DATA:
+        this.lookupOptionData = action.value;
+        this.emit(
+          EventType.GET_LOOKUP_OPTIONS_DATA_SUCCESS,
+          this.lookupOptionData
+        );
+        break;
+      case ActionType.GET_LOOKUP_OPTIONS_DATA_FAILED:
+        this.emit(EventType.CREATE_CLUSTER_FAILED);
+        break;
+      default:
+        break;
     }
   };
 
@@ -45,9 +44,12 @@ class DashBoardStore extends EventEmitter {
     return data;
   };
 
-   getDropdownData = (header, name, value) => {
+  getDropdownData = (header, name, value) => {
     let options = [];
     const optionsData = this.getOptions();
+    if (optionsData.length === 0) {
+      return;
+    }
     switch (header) {
       case "Provider":
         const _filter = optionsData.find((option) => {
@@ -99,34 +101,6 @@ class DashBoardStore extends EventEmitter {
       value,
       options,
     };
-  };
-  lookupOptionsDataLoaded = () => {
-    const provider = this.getDropdownData("Provider", "cloudSrvc");
-    const masterInstTypes = this.getDropdownData(
-      "Master Instance Type",
-      "masterSize"
-    );
-    const workerInstTypes = this.getDropdownData(
-      "Worker Instance Type",
-      "nodeSize"
-    );
-    const imageName = this.getDropdownData("Image Name", "imageName");
-    const dashboard = this.getDropdownData("Dashboard", "dashboard");
-    const credentials = this.getDropdownData("Credentials", "credentials");
-
-    const lookupData = {
-      provider,
-      masterInstTypes,
-      workerInstTypes,
-      imageName,
-      dashboard,
-      credentials,
-    };
-
-    this.setState({
-      loading: false,
-      lookupData,
-    });
   };
   addEventListener = (eventName, callBack) => {
     this.on(eventName, callBack);

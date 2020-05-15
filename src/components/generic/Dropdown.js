@@ -8,6 +8,9 @@ class Item extends Component {
   generateOptions = () => {
     const { data } = this.props;
     console.log("data.options :", data);
+    if (!data) {
+      return null;
+    }
     const options = data.map((option) => {
       return <option value={option.value}>{option.description}</option>;
     });
@@ -16,6 +19,9 @@ class Item extends Component {
   render() {
     const options = this.generateOptions();
     const { data, onChange, value } = this.props;
+    if (!data) {
+      return null;
+    }
     return (
       <div className="form-group">
         <label className="col-sm-12">{data.header}</label>

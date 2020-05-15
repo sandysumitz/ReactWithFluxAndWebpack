@@ -2,6 +2,7 @@ import React, { Component, createFactory } from "react";
 import CreateCluster from "./cluster/CreateCluster";
 import Security from "./security/Security";
 import UnderConstruction from "./UnderConstruction";
+import DashBoard from "./dashboard/Dashboard";
 import MenuStore from "../stores/MenuStore";
 import EventType from "../constants/eventType";
 
@@ -25,6 +26,7 @@ class PageWrapper extends Component {
     const selectedMenu = MenuStore.getSelectedMenu();
     switch (selectedMenu.name) {
       case "DashBoard":
+        component = <DashBoard />;
         break;
       case "Cluster Management":
         component = <CreateCluster />;
