@@ -25,16 +25,16 @@ class CreateCluster extends Component {
   getInitialState = () => {
     return {
       message: "",
-      cloudSrvc: "",
+      cloudSrvc: "Azure_native",
       masterCount: "1",
       nodeCount: "",
-      masterSize: "",
-      nodeSize: "",
+      masterSize: "Standard_B2s",
+      nodeSize: "Standard_B1ms",
       clusterName: "",
-      credentials: "",
-      imageName: "",
-      dashboard: "",
-      enableLogging: false,
+      credentials: "Operations",
+      imageName: "ubuntu",
+      kubeDashboard: "KubernetesDashboard",
+      enableLogging: true,
       enableMonitoring: false,
       loading: true,
     };
@@ -118,6 +118,23 @@ class CreateCluster extends Component {
       [event.target.name]: event.target.value,
     });
   };
+  handleOnProviderChange = (event) => {
+    let nodeSize = "";
+    switch (event.target.value) {
+      case "Azure_native":
+        nodeSize = "Standard_B1ms";
+        break;
+      case "AKS":
+        nodeSize = "Standard_B2s";
+        break;
+      default:
+        break;
+    }
+    this.setState({
+      [event.target.name]: event.target.value,
+      nodeSize,
+    });
+  };
   handleSubmit = (event) => {
     event.preventDefault();
     const { nodeCount, clusterName, cloudSrvc } = this.state;
@@ -138,7 +155,7 @@ class CreateCluster extends Component {
       nodeSize: this.state.nodeSize,
       clusterName: this.state.clusterName,
       imageName: this.state.imageName,
-      kubeDashboard: this.state.dashboard,
+      kubeDashboard: this.state.kubeDashboard,
       loggingEnabled: this.state.enableLogging,
       monitoringEnabled: this.state.monitoringEnabled,
       credentialName: this.state.credentials,
@@ -146,7 +163,9 @@ class CreateCluster extends Component {
   };
 
   render() {
-    console.log("this.state---- render", this.state);
+    if (this.state.loading) {
+      return <Loader />;
+    }
     return (
       <div className="container-fluid">
         <div className="row page-titles">
@@ -160,163 +179,157 @@ class CreateCluster extends Component {
               <div className="card-block">
                 <h4 className="card-title">Cluster Management</h4>
                 <div className="table-responsive">
-                  {this.state.loading ? (
-                    <Loader />
-                  ) : (
-                    <form className="form-horizontal form-material">
-                      <DropDown
-                        data={this.state.lookupData.provider}
-                        value={this.state.cloudSrvc}
-                        onChange={this.handleOnChange}
-                      />
-                      <div className="form-group">
-                        <label className="col-md-12">Cluster Name</label>
-                        <div className="col-md-12">
-                          <input
-                            type="text"
-                            name="clusterName"
-                            required
-                            value={this.state.clusterName}
-                            onChange={this.handleOnChange}
-                            className="form-control form-control-line"
-                          />
-                        </div>
+                  <form className="form-horizontal form-material">
+                    <DropDown
+                      data={this.state.lookupData.provider}
+                      value={this.state.cloudSrvc}
+                      onChange={this.handleOnProviderChange}
+                    />
+                    <div className="form-group">
+                      <label className="col-md-12">Cluster Name</label>
+                      <div className="col-md-12">
+                        <input
+                          type="text"
+                          name="clusterName"
+                          required
+                          value={this.state.clusterName}
+                          onChange={this.handleOnChange}
+                          className="form-control form-control-line"
+                        />
                       </div>
+                    </div>
+                    <div className="form-group">
+                      <label className="col-md-12">
+                        Number of Worker Nodes
+                      </label>
+                      <div className="col-md-12">
+                        <input
+                          name="nodeCount"
+                          type="text"
+                          required
+                          value={this.state.nodeCount}
+                          onChange={this.handleOnChange}
+                          className="form-control form-control-line"
+                        />
+                      </div>
+                    </div>
+                    {this.state.cloudSrvc === "Azure_native" ? (
                       <div className="form-group">
                         <label className="col-md-12">
-                          Number of Worker Nodes
+                          Number of Master Nodes
                         </label>
                         <div className="col-md-12">
                           <input
-                            name="nodeCount"
                             type="text"
                             required
-                            value={this.state.nodeCount}
-                            onChange={this.handleOnChange}
+                            disabled
+                            value={this.state.masterCount}
+                            onChange={this.handleNodeChange}
                             className="form-control form-control-line"
                           />
                         </div>
                       </div>
-                      {this.state.cloudSrvc === "Azure" ? (
-                        <div className="form-group">
-                          <label className="col-md-12">
-                            Number of Master Nodes
-                          </label>
-                          <div className="col-md-12">
-                            <input
-                              type="text"
-                              required
-                              disabled
-                              value={this.state.masterCount}
-                              onChange={this.handleNodeChange}
-                              className="form-control form-control-line"
-                            />
-                          </div>
-                        </div>
-                      ) : null}
-                      {this.state.cloudSrvc === "Azure" ? (
-                        <DropDown
-                          data={this.state.lookupData.masterInstTypes}
-                          value={this.state.masterSize}
+                    ) : null}
+                    {this.state.cloudSrvc === "Azure_native" ? (
+                      <DropDown
+                        data={this.state.lookupData.masterInstTypes}
+                        value={this.state.masterSize}
+                        onChange={this.handleOnChange}
+                      />
+                    ) : null}
+                    <DropDown
+                      data={this.state.lookupData.workerInstTypes}
+                      value={this.state.nodeSize}
+                      onChange={this.handleOnChange}
+                    />
+                    <DropDown
+                      data={this.state.lookupData.imageName}
+                      value={this.state.imageName}
+                      onChange={this.handleOnChange}
+                    />
+                    <DropDown
+                      data={this.state.lookupData.dashboard}
+                      value={this.state.kubeDashboard}
+                      onChange={this.handleOnChange}
+                    />
+                    <div className="form-group">
+                      <label className="col-sm-12">Enable Logging</label>
+                      <div className="col-sm-12">
+                        <input
+                          type="radio"
+                          name="enableLogging"
+                          id="log_yes"
+                          value={true}
+                          defaultChecked
                           onChange={this.handleOnChange}
                         />
-                      ) : null}
-                      <DropDown
-                        data={this.state.lookupData.workerInstTypes}
-                        value={this.state.nodeSize}
-                        onChange={this.handleOnChange}
-                      />
-                      <DropDown
-                        data={this.state.lookupData.imageName}
-                        value={this.state.imageName}
-                        onChange={this.handleOnChange}
-                      />
-                      <DropDown
-                        data={this.state.lookupData.dashboard}
-                        value={this.state.dashboard}
-                        onChange={this.handleOnChange}
-                      />
-                      <div className="form-group">
-                        <label className="col-sm-12">Enable Logging</label>
-                        <div className="col-sm-12">
-                          <input
-                            type="radio"
-                            name="enableLogging"
-                            id="log_yes"
-                            value={true}
-                            onChange={this.handleOnChange}
-                          />
-                          <label htmlFor="log_yes">Yes</label>
-                        </div>
-                        <div className="col-sm-12">
-                          <input
-                            type="radio"
-                            name="enableLogging"
-                            id="log_no"
-                            value={false}
-                            defaultChecked
-                            onChange={this.handleOnChange}
-                          />
-                          <label htmlFor="log_no">No</label>
-                        </div>
+                        <label htmlFor="log_yes">Yes</label>
                       </div>
-                      <div className="form-group">
-                        <label className="col-sm-12">Enable Monitoring</label>
-                        <div className="col-sm-12">
-                          <input
-                            type="radio"
-                            name="enableMonitoring"
-                            id="monitor_yes"
-                            value={true}
-                            onChange={this.handleOnChange}
-                          />
-                          <label htmlFor="monitor_yes">Yes</label>
-                        </div>
-                        <div className="col-sm-12">
-                          <input
-                            type="radio"
-                            name="enableMonitoring"
-                            id="monitor_no"
-                            value={false}
-                            defaultChecked
-                            onChange={this.handleOnChange}
-                          />
-                          <label htmlFor="monitor_no">No</label>
-                        </div>
+                      <div className="col-sm-12">
+                        <input
+                          type="radio"
+                          name="enableLogging"
+                          id="log_no"
+                          value={false}
+                          onChange={this.handleOnChange}
+                        />
+                        <label htmlFor="log_no">No</label>
                       </div>
-                      <DropDown
-                        data={this.state.lookupData.credentials}
-                        value={this.state.credentials}
-                        onChange={this.handleOnChange}
-                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="col-sm-12">Enable Monitoring</label>
+                      <div className="col-sm-12">
+                        <input
+                          type="radio"
+                          name="enableMonitoring"
+                          id="monitor_yes"
+                          value={true}
+                          onChange={this.handleOnChange}
+                        />
+                        <label htmlFor="monitor_yes">Yes</label>
+                      </div>
+                      <div className="col-sm-12">
+                        <input
+                          type="radio"
+                          name="enableMonitoring"
+                          id="monitor_no"
+                          value={false}
+                          defaultChecked
+                          onChange={this.handleOnChange}
+                        />
+                        <label htmlFor="monitor_no">No</label>
+                      </div>
+                    </div>
+                    <DropDown
+                      data={this.state.lookupData.credentials}
+                      value={this.state.credentials}
+                      onChange={this.handleOnChange}
+                    />
 
-                      <div className="form-group float-left">
-                        <div className="col-sm-10">
-                          <button
-                            onClick={this.handleSubmit}
-                            className="btn btn-success"
-                          >
-                            Submit
-                          </button>
-                        </div>
+                    <div className="form-group float-left">
+                      <div className="col-sm-10">
+                        <button
+                          onClick={this.handleSubmit}
+                          className="btn btn-success"
+                        >
+                          Submit
+                        </button>
                       </div>
-                      <div className="form-group">
-                        <div className="col-sm-10">
-                          <button
-                            onClick={this.handleReset}
-                            className="btn btn-danger"
-                          >
-                            Reset
-                          </button>
-                        </div>
+                    </div>
+                    <div className="form-group">
+                      <div className="col-sm-10">
+                        <button
+                          onClick={this.handleReset}
+                          className="btn btn-danger"
+                        >
+                          Reset
+                        </button>
                       </div>
-                      <div className="form-group">
-                        <h5 className="text-themecolor">
-                          {this.state.message}
-                        </h5>
-                      </div>
-                    </form>
-                  )}
+                    </div>
+                    <div className="form-group">
+                      <h5 className="text-themecolor">{this.state.message}</h5>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
