@@ -182,7 +182,6 @@ class CreateCluster extends Component {
   };
 
   render() {
-    console.log("this.state.lookupData ---", this.state.lookupData.provider);
     if (this.state.loading || !this.state.lookupData.provider) {
       return <Loader />;
     }
