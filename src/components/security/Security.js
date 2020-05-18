@@ -36,6 +36,10 @@ class Security extends Component {
       clientIdMissing: false,
       tenantMissing: false,
       secretMissing: false,
+      subscriptionIdHidden: true,
+      clientIdHidden: true,
+      tenantHidden: true,
+      secretHidden: true,
     };
   };
 
@@ -92,6 +96,11 @@ class Security extends Component {
     this.setState({
       [event.target.name]: event.target.value,
       [event.target.name + "Missing"]: false,
+    });
+  };
+  handleToggle = (event) => {
+    this.setState({
+      [event.target.id]: !this.state[event.target.id],
     });
   };
   handleSubmit = (event) => {
@@ -190,7 +199,11 @@ class Security extends Component {
                       </label>
                       <div className="col-md-12">
                         <input
-                          type="password"
+                          type={
+                            this.state.subscriptionIdHidden
+                              ? "password"
+                              : "text"
+                          }
                           name="subscriptionId"
                           required
                           value={this.state.subscriptionId}
@@ -200,6 +213,16 @@ class Security extends Component {
                             this.state.subscriptionIdMissing ? "mandatory" : ""
                           )}
                         />
+                        <i
+                          id="subscriptionIdHidden"
+                          className={classNames(
+                            "eye fa",
+                            this.state.subscriptionIdHidden
+                              ? "fa-eye-slash"
+                              : "fa-eye"
+                          )}
+                          onClick={this.handleToggle}
+                        ></i>
                       </div>
                     </div>
 
@@ -207,7 +230,7 @@ class Security extends Component {
                       <label className="col-md-12 required">Client ID</label>
                       <div className="col-md-12">
                         <input
-                          type="password"
+                          type={this.state.clientIdHidden ? "password" : "text"}
                           name="clientId"
                           required
                           value={this.state.clientId}
@@ -217,6 +240,16 @@ class Security extends Component {
                             this.state.clientIdMissing ? "mandatory" : ""
                           )}
                         />
+                        <i
+                          id="clientIdHidden"
+                          className={classNames(
+                            "eye fa",
+                            this.state.clientIdHidden
+                              ? "fa-eye-slash"
+                              : "fa-eye"
+                          )}
+                          onClick={this.handleToggle}
+                        ></i>
                       </div>
                     </div>
 
@@ -224,7 +257,7 @@ class Security extends Component {
                       <label className="col-md-12 required">Tenant</label>
                       <div className="col-md-12">
                         <input
-                          type="password"
+                          type={this.state.tenantHidden ? "password" : "text"}
                           name="tenant"
                           required
                           value={this.state.tenant}
@@ -234,6 +267,14 @@ class Security extends Component {
                             this.state.tenantMissing ? "mandatory" : ""
                           )}
                         />
+                        <i
+                          id="tenantHidden"
+                          className={classNames(
+                            "eye fa",
+                            this.state.tenantHidden ? "fa-eye-slash" : "fa-eye"
+                          )}
+                          onClick={this.handleToggle}
+                        ></i>
                       </div>
                     </div>
 
@@ -241,7 +282,7 @@ class Security extends Component {
                       <label className="col-md-12 required">Secret</label>
                       <div className="col-md-12">
                         <input
-                          type="password"
+                          type={this.state.secretHidden ? "password" : "text"}
                           name="secret"
                           required
                           value={this.state.secret}
@@ -251,6 +292,14 @@ class Security extends Component {
                             this.state.secretMissing ? "mandatory" : ""
                           )}
                         />
+                        <i
+                          id="secretHidden"
+                          className={classNames(
+                            "eye fa",
+                            this.state.secretHidden ? "fa-eye-slash" : "fa-eye"
+                          )}
+                          onClick={this.handleToggle}
+                        ></i>
                       </div>
                     </div>
 

@@ -3693,6 +3693,7 @@ Form Material page
   -webkit-box-shadow: none;
   box-shadow: none;
   float: none;
+  width: 99%;
 }
 
 .form-material .form-control.mandatory {
@@ -10307,4 +10308,9 @@ pre {
 .required:after {
   content: " *";
   color: red
+}
+
+.eye {
+  position: absolute;
+  cursor: pointer;
 }
