@@ -7,29 +7,36 @@ class Item extends Component {
   }
   generateOptions = () => {
     const { data } = this.props;
-    console.log("data.options :", data);
     if (!data) {
       return null;
     }
-    const options = data.options.map((option) => {
-      return <option value={option.value}>{option.description}</option>;
+    const options = data.options.map((option, i) => {
+      return (
+        <option key={"option_" + i} value={option.value}>
+          {option.description}
+        </option>
+      );
     });
     return options;
   };
   render() {
     const options = this.generateOptions();
-    const { data, onChange, value, mandatory} = this.props;
+    const { data, onChange, value, mandatory, required } = this.props;
     if (!data) {
       return null;
     }
     return (
       <div className="form-group">
-        <label className="col-sm-12">{data.header}</label>
+        <label className={classNames("col-sm-12", required ? "required" : "")}>
+          {data.header}
+        </label>
         <div className="col-sm-12">
           <select
             name={data.name}
-            className={classNames("form-control form-control-line",
-            mandatory ? "mandatory": "")}
+            className={classNames(
+              "form-control form-control-line",
+              mandatory ? "mandatory" : ""
+            )}
             value={value}
             onChange={onChange}
           >

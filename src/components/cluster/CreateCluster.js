@@ -22,6 +22,7 @@ class CreateCluster extends Component {
       dashboard: [],
       credentials: [],
     };
+    this.state.loading = true;
   }
 
   getInitialState = () => {
@@ -36,13 +37,12 @@ class CreateCluster extends Component {
       credentials: "Operations",
       imageName: "ubuntu",
       kubeDashboard: "KubernetesDashboard",
-      enableLogging: true,
-      enableMonitoring: false,
-      loading: true,
+      loggingEnabled: "Y",
+      monitoringEnabled: "N",
       cloudSrvcMissing: false,
-      nodeCountMissing: false,
+      masterCountMissing: false,
       clusterNameMissing: false,
-      credentialsMissing: false
+      credentialsMissing: false,
     };
   };
 
@@ -122,7 +122,8 @@ class CreateCluster extends Component {
   handleOnChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value,
-      [event.target.name+"Missing"]: false
+      [event.target.name + "Missing"]: false,
+      message: "",
     });
   };
   handleOnProviderChange = (event) => {
@@ -139,15 +140,16 @@ class CreateCluster extends Component {
     }
     this.setState({
       [event.target.name]: event.target.value,
+      [event.target.name + "Missing"]: !nodeSize,
       nodeSize,
     });
   };
   handleSubmit = (event) => {
     event.preventDefault();
     const { nodeCount, clusterName, cloudSrvc, credentialName } = this.state;
-    console.log("this.state --- ", this.state);
 
-    if (!nodeCount || !clusterName || !cloudSrvc) {// || !credentialName) { TODO - correct when lookupoption api return the value
+    if (!nodeCount || !clusterName || !cloudSrvc) {
+      // || !credentialName) { TODO - correct when lookupoption api return the value
       this.setState({
         message: messages.CLUSTER.FIELD_MISSING,
         nodeCountMissing: !nodeCount,
@@ -158,23 +160,34 @@ class CreateCluster extends Component {
       return false;
     }
 
-    ClusterActionCreator.createCluster({
+    const requestParams = {
       cloudSrv: this.state.cloudSrvc,
-      masterCount: this.state.masterCount,
+      masterCount:
+        this.state.cloudSrvc === "Azure_native"
+          ? this.state.masterCount
+          : undefined,
       nodeCount: this.state.nodeCount,
-      masterSize: this.state.masterSize,
+      masterSize:
+        this.state.cloudSrvc === "Azure_native"
+          ? this.state.masterSize
+          : undefined,
       nodeSize: this.state.nodeSize,
       clusterName: this.state.clusterName,
       imageName: this.state.imageName,
       kubeDashboard: this.state.kubeDashboard,
-      loggingEnabled: this.state.enableLogging,
+      loggingEnabled: this.state.loggingEnabled,
       monitoringEnabled: this.state.monitoringEnabled,
       credentialName: this.state.credentials,
-    });
+    };
+    Object.keys(requestParams).map(
+      (key) => requestParams[key] === undefined && delete requestParams[key]
+    );
+    ClusterActionCreator.createCluster(requestParams);
   };
 
   render() {
-    if (this.state.loading) {
+    console.log("this.state.lookupData ---", this.state.lookupData.provider);
+    if (this.state.loading || !this.state.lookupData.provider) {
       return <Loader />;
     }
     return (
@@ -196,6 +209,7 @@ class CreateCluster extends Component {
                       value={this.state.cloudSrvc}
                       onChange={this.handleOnProviderChange}
                       mandatory={this.state.cloudSrvcMissing}
+                      required={true}
                     />
                     <div className="form-group">
                       <label className="col-md-12 required">Cluster Name</label>
@@ -206,8 +220,10 @@ class CreateCluster extends Component {
                           required
                           value={this.state.clusterName}
                           onChange={this.handleOnChange}
-                          className={classNames("form-control form-control-line",
-                          this.state.clusterNameMissing ? "mandatory": "")}
+                          className={classNames(
+                            "form-control form-control-line",
+                            this.state.clusterNameMissing ? "mandatory" : ""
+                          )}
                         />
                       </div>
                     </div>
@@ -222,7 +238,10 @@ class CreateCluster extends Component {
                           required
                           value={this.state.nodeCount}
                           onChange={this.handleOnChange}
-                          className="form-control form-control-line"
+                          className={classNames(
+                            "form-control form-control-line",
+                            this.state.nodeCountMissing ? "mandatory" : ""
+                          )}
                         />
                       </div>
                     </div>
@@ -236,10 +255,12 @@ class CreateCluster extends Component {
                             type="text"
                             required
                             disabled
-                            value={this.state.nodeCount}
+                            value={this.state.masterCount}
                             onChange={this.handleOnChange}
-                            className={classNames("form-control form-control-line",
-                            this.state.nodeCountMissing ? "mandatory": "")}
+                            className={classNames(
+                              "form-control form-control-line",
+                              this.state.masterCountMissing ? "mandatory" : ""
+                            )}
                           />
                         </div>
                       </div>
@@ -271,9 +292,9 @@ class CreateCluster extends Component {
                       <div className="col-sm-12">
                         <input
                           type="radio"
-                          name="enableLogging"
+                          name="loggingEnabled"
                           id="log_yes"
-                          value={true}
+                          value={"Y"}
                           defaultChecked
                           onChange={this.handleOnChange}
                         />
@@ -282,9 +303,9 @@ class CreateCluster extends Component {
                       <div className="col-sm-12">
                         <input
                           type="radio"
-                          name="enableLogging"
+                          name="loggingEnabled"
                           id="log_no"
-                          value={false}
+                          value={"N"}
                           onChange={this.handleOnChange}
                         />
                         <label htmlFor="log_no">No</label>
@@ -295,9 +316,9 @@ class CreateCluster extends Component {
                       <div className="col-sm-12">
                         <input
                           type="radio"
-                          name="enableMonitoring"
+                          name="monitoringEnabled"
                           id="monitor_yes"
-                          value={true}
+                          value={"Y"}
                           onChange={this.handleOnChange}
                         />
                         <label htmlFor="monitor_yes">Yes</label>
@@ -305,9 +326,9 @@ class CreateCluster extends Component {
                       <div className="col-sm-12">
                         <input
                           type="radio"
-                          name="enableMonitoring"
+                          name="monitoringEnabled"
                           id="monitor_no"
-                          value={false}
+                          value={"N"}
                           defaultChecked
                           onChange={this.handleOnChange}
                         />

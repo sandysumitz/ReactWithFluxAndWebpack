@@ -30,7 +30,6 @@ class DashBoardStore extends EventEmitter {
     const options = this.lookupOptionData;
     const data = Object.keys(options).map((_key) => {
       const item = options[_key];
-      console.log(_key);
       return {
         [_key]: Object.keys(item).map((key) => {
           return {
@@ -40,7 +39,6 @@ class DashBoardStore extends EventEmitter {
         }),
       };
     });
-    console.log("providerdata :", data);
     return data;
   };
 
@@ -56,42 +54,36 @@ class DashBoardStore extends EventEmitter {
           return Object.keys(option)[0] === "provider";
         });
         options = _filter["provider"];
-        console.log("options", options);
         break;
       case "Master Instance Type":
         const _filter1 = optionsData.find((option) => {
           return Object.keys(option)[0] === "masterInstTypes";
         });
         options = _filter1["masterInstTypes"];
-        console.log("options", options);
         break;
       case "Worker Instance Type":
         const _filter2 = optionsData.find((option) => {
           return Object.keys(option)[0] === "workerInstTypes";
         });
         options = _filter2["workerInstTypes"];
-        console.log("options", options);
         break;
       case "Image Name":
         const _filter3 = optionsData.find((option) => {
           return Object.keys(option)[0] === "imageName";
         });
         options = _filter3["imageName"];
-        console.log("options", options);
         break;
       case "Dashboard":
         const _filter4 = optionsData.find((option) => {
           return Object.keys(option)[0] === "dashboard";
         });
         options = _filter4["dashboard"];
-        console.log("options", options);
         break;
       case "Credentials":
         const _filter5 = optionsData.find((option) => {
           return Object.keys(option)[0] === "credentials";
         });
         options = _filter5 && _filter5["credentials"];
-        console.log("options", options);
         break;
     }
 

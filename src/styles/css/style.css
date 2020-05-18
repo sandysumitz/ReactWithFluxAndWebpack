@@ -10304,7 +10304,7 @@ pre {
   background-color: #ffffff;
 }
 
-.required:after{
-  content: "*";
+.required:after {
+  content: " *";
   color: red
 }

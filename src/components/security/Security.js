@@ -6,6 +6,8 @@ import DashboardStore from "../../stores/DashBoardStore";
 
 import DropDown from "../../components/generic/Dropdown";
 
+import Loader from "../loader/Loader";
+
 import EventType from "../../constants/eventType";
 import messages from "../../messges.json";
 
@@ -15,7 +17,8 @@ class Security extends Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
-    this.state.provider =[];
+    this.state.provider = [];
+    this.state.loading = true;
   }
 
   getInitialState = () => {
@@ -27,13 +30,12 @@ class Security extends Component {
       clientId: "",
       tenant: "",
       secret: "",
-      loading: true,
       cloudSrvcMissing: false,
       credentialNameMissing: false,
       subscriptionIdMissing: false,
       clientIdMissing: false,
       tenantMissing: false,
-      secretMissing: false
+      secretMissing: false,
     };
   };
 
@@ -41,7 +43,7 @@ class Security extends Component {
     this.setState({
       nodeCount: "",
       clusterName: "",
-      message: messages.SECURITY.SECURITY_CREATED
+      message: messages.SECURITY.SECURITY_CREATED,
     });
   };
 
@@ -50,15 +52,15 @@ class Security extends Component {
       message: messages.SECURITY.SOMETHING_WRONG,
     });
   };
-  
+
   loadLookupOptionsData = () => {
     const provider = DashboardStore.getDropdownData("Provider", "cloudSrvc");
 
     this.setState({
       provider,
-      loading: false
+      loading: false,
     });
-  }
+  };
 
   componentDidMount() {
     this.loadLookupOptionsData();
@@ -87,17 +89,30 @@ class Security extends Component {
     this.setState(this.getInitialState());
   };
   handleOnChange = (event) => {
-    console.log("event.target :", event.target.name);
     this.setState({
       [event.target.name]: event.target.value,
-      [event.target.name+"Missing"]: false
+      [event.target.name + "Missing"]: false,
     });
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    const { cloudSrvc, credentialName, subscriptionId, clientId, tenant, secret} = this.state;
+    const {
+      cloudSrvc,
+      credentialName,
+      subscriptionId,
+      clientId,
+      tenant,
+      secret,
+    } = this.state;
 
-    if (!cloudSrvc || !credentialName || !subscriptionId || !clientId || !tenant || !secret) {
+    if (
+      !cloudSrvc ||
+      !credentialName ||
+      !subscriptionId ||
+      !clientId ||
+      !tenant ||
+      !secret
+    ) {
       this.setState({
         message: messages.SECURITY.FIELD_MISSING,
         cloudSrvcMissing: !cloudSrvc,
@@ -105,26 +120,28 @@ class Security extends Component {
         subscriptionIdMissing: !subscriptionId,
         clientIdMissing: !clientId,
         tenantMissing: !tenant,
-        secretMissing: !secret
+        secretMissing: !secret,
       });
       return false;
     }
-//TODO PARAMETER
+    //TODO PARAMETER
     SecurityActionCreator.createSecurity({
-      userId: "123",//TODO - Lgged in user id, correct after development of login 
+      userId: "123", //TODO - Lgged in user id, correct after development of login
       provider: this.state.cloudSrvc,
       name: this.state.credentialName,
       credntials: {
         subscriptionID: this.state.subscriptionId,
         clientID: this.state.clientId,
         tenant: this.state.tenant,
-        secret: this.state.secret
-      }
+        secret: this.state.secret,
+      },
     });
   };
 
   render() {
-    console.log("this.state.enableLogging", this.state);
+    if (this.state.loading || !this.state.provider) {
+      return <Loader />;
+    }
     return (
       <div className="container-fluid">
         <div className="row page-titles">
@@ -139,15 +156,19 @@ class Security extends Component {
                 <h4 className="card-title">Security</h4>
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
-                  { this.state.loading ? null : (
+                    {this.state.loading ? null : (
                       <DropDown
                         data={this.state.provider}
                         value={this.state.cloudSrvc}
                         onChange={this.handleOnChange}
                         mandatory={this.state.cloudSrvcMissing}
-                      />) }
+                        required={true}
+                      />
+                    )}
                     <div className="form-group">
-                      <label className="col-md-12 required">Credential Name</label>
+                      <label className="col-md-12 required">
+                        Credential Name
+                      </label>
                       <div className="col-md-12">
                         <input
                           type="text"
@@ -155,14 +176,18 @@ class Security extends Component {
                           required
                           value={this.state.credentialName}
                           onChange={this.handleOnChange}
-                          className={classNames("form-control form-control-line",
-                              this.state.credentialNameMissing ? "mandatory": "")}
+                          className={classNames(
+                            "form-control form-control-line",
+                            this.state.credentialNameMissing ? "mandatory" : ""
+                          )}
                         />
                       </div>
                     </div>
 
                     <div className="form-group">
-                      <label className="col-md-12 required">Subscription ID</label>
+                      <label className="col-md-12 required">
+                        Subscription ID
+                      </label>
                       <div className="col-md-12">
                         <input
                           type="password"
@@ -170,8 +195,10 @@ class Security extends Component {
                           required
                           value={this.state.subscriptionId}
                           onChange={this.handleOnChange}
-                          className={classNames("form-control form-control-line",
-                          this.state.subscriptionIdMissing ? "mandatory": "")}
+                          className={classNames(
+                            "form-control form-control-line",
+                            this.state.subscriptionIdMissing ? "mandatory" : ""
+                          )}
                         />
                       </div>
                     </div>
@@ -185,8 +212,10 @@ class Security extends Component {
                           required
                           value={this.state.clientId}
                           onChange={this.handleOnChange}
-                          className={classNames("form-control form-control-line",
-                          this.state.clientIdMissing ? "mandatory": "")}
+                          className={classNames(
+                            "form-control form-control-line",
+                            this.state.clientIdMissing ? "mandatory" : ""
+                          )}
                         />
                       </div>
                     </div>
@@ -200,8 +229,10 @@ class Security extends Component {
                           required
                           value={this.state.tenant}
                           onChange={this.handleOnChange}
-                          className={classNames("form-control form-control-line",
-                          this.state.tenantMissing ? "mandatory": "")}
+                          className={classNames(
+                            "form-control form-control-line",
+                            this.state.tenantMissing ? "mandatory" : ""
+                          )}
                         />
                       </div>
                     </div>
@@ -215,8 +246,10 @@ class Security extends Component {
                           required
                           value={this.state.secret}
                           onChange={this.handleOnChange}
-                          className={classNames("form-control form-control-line",
-                          this.state.secretMissing ? "mandatory": "")}
+                          className={classNames(
+                            "form-control form-control-line",
+                            this.state.secretMissing ? "mandatory" : ""
+                          )}
                         />
                       </div>
                     </div>
