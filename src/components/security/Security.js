@@ -165,15 +165,6 @@ class Security extends Component {
                 <h4 className="card-title">Security</h4>
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
-                    {this.state.loading ? null : (
-                      <DropDown
-                        data={this.state.provider}
-                        value={this.state.cloudSrvc}
-                        onChange={this.handleOnChange}
-                        mandatory={this.state.cloudSrvcMissing}
-                        required={true}
-                      />
-                    )}
                     <div className="form-group">
                       <label className="col-md-12 required">
                         Credential Name
@@ -192,7 +183,15 @@ class Security extends Component {
                         />
                       </div>
                     </div>
-
+                    {this.state.loading ? null : (
+                      <DropDown
+                        data={this.state.provider}
+                        value={this.state.cloudSrvc}
+                        onChange={this.handleOnChange}
+                        mandatory={this.state.cloudSrvcMissing}
+                        required={true}
+                      />
+                    )}
                     <div className="form-group">
                       <label className="col-md-12 required">
                         Subscription ID
