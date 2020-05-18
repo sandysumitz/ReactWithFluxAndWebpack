@@ -200,13 +200,6 @@ class CreateCluster extends Component {
                 <h4 className="card-title">Cluster Management</h4>
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
-                    <DropDown
-                      data={this.state.lookupData.provider}
-                      value={this.state.cloudSrvc}
-                      onChange={this.handleOnProviderChange}
-                      mandatory={this.state.cloudSrvcMissing}
-                      required={true}
-                    />
                     <div className="form-group">
                       <label className="col-md-12 required">Cluster Name</label>
                       <div className="col-md-12">
@@ -223,6 +216,13 @@ class CreateCluster extends Component {
                         />
                       </div>
                     </div>
+                    <DropDown
+                      data={this.state.lookupData.provider}
+                      value={this.state.cloudSrvc}
+                      onChange={this.handleOnProviderChange}
+                      mandatory={this.state.cloudSrvcMissing}
+                      required={true}
+                    />
                     <div className="form-group">
                       <label className="col-md-12 required">
                         Number of Worker Nodes
