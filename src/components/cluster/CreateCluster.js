@@ -28,7 +28,7 @@ class CreateCluster extends Component {
   getInitialState = () => {
     return {
       message: "",
-      cloudSrvc: "Azure_native",
+      cloudSrvc: "Azure",
       masterCount: "1",
       nodeCount: "",
       masterSize: "Standard_B2s",
@@ -129,7 +129,7 @@ class CreateCluster extends Component {
   handleOnProviderChange = (event) => {
     let nodeSize = "";
     switch (event.target.value) {
-      case "Azure_native":
+      case "Azure":
         nodeSize = "Standard_B1ms";
         break;
       case "AKS":
@@ -161,16 +161,12 @@ class CreateCluster extends Component {
     }
 
     const requestParams = {
-      cloudSrv: this.state.cloudSrvc,
+      cloudSrvc: this.state.cloudSrvc,
       masterCount:
-        this.state.cloudSrvc === "Azure_native"
-          ? this.state.masterCount
-          : undefined,
+        this.state.cloudSrvc === "Azure" ? this.state.masterCount : undefined,
       nodeCount: this.state.nodeCount,
       masterSize:
-        this.state.cloudSrvc === "Azure_native"
-          ? this.state.masterSize
-          : undefined,
+        this.state.cloudSrvc === "Azure" ? this.state.masterSize : undefined,
       nodeSize: this.state.nodeSize,
       clusterName: this.state.clusterName,
       imageName: this.state.imageName,
@@ -245,7 +241,7 @@ class CreateCluster extends Component {
                         />
                       </div>
                     </div>
-                    {this.state.cloudSrvc === "Azure_native" ? (
+                    {this.state.cloudSrvc === "Azure" ? (
                       <div className="form-group">
                         <label className="col-md-12 required">
                           Number of Master Nodes
@@ -265,7 +261,7 @@ class CreateCluster extends Component {
                         </div>
                       </div>
                     ) : null}
-                    {this.state.cloudSrvc === "Azure_native" ? (
+                    {this.state.cloudSrvc === "Azure" ? (
                       <DropDown
                         data={this.state.lookupData.masterInstTypes}
                         value={this.state.masterSize}
