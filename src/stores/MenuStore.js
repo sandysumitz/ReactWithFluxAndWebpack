@@ -2,6 +2,7 @@ import { EventEmitter } from "events";
 import Dispatcher from "../dispatcher";
 import ActionType from "../constants/actionType";
 import EventType from "../constants/eventType";
+import Menu from "../constants/menu";
 
 class MenuStore extends EventEmitter {
   constructor() {
@@ -10,17 +11,22 @@ class MenuStore extends EventEmitter {
     this.items = [
       {
         id: 1,
-        name: "DashBoard",
+        name: Menu.DASHBOARD,
         isActive: true,
       },
       {
         id: 2,
-        name: "Cluster Management",
+        name: Menu.CLUSTER_MANAGEMENT,
         isActive: false,
       },
       {
         id: 3,
-        name: "Security",
+        name: Menu.SECURITY,
+        isActive: false,
+      },
+      {
+        id: 4,
+        name: Menu.NAMESPACE,
         isActive: false,
       },
     ];

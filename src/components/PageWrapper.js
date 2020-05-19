@@ -3,8 +3,10 @@ import CreateCluster from "./cluster/CreateCluster";
 import Security from "./security/Security";
 import UnderConstruction from "./UnderConstruction";
 import DashBoard from "./dashboard/Dashboard";
+import NameSpace from "./namespace/CreateNameSpace";
 import MenuStore from "../stores/MenuStore";
 import EventType from "../constants/eventType";
+import Menu from "../constants/menu";
 
 class PageWrapper extends Component {
   constructor() {
@@ -25,14 +27,18 @@ class PageWrapper extends Component {
     let component = <UnderConstruction />;
     const selectedMenu = MenuStore.getSelectedMenu();
     switch (selectedMenu.name) {
-      case "DashBoard":
+      case Menu.DASHBOARD:
         component = <DashBoard />;
         break;
-      case "Cluster Management":
+      case Menu.CLUSTER_MANAGEMENT:
         component = <CreateCluster />;
         break;
-      case "Security":
+      case Menu.SECURITY:
         component = <Security />;
+        break;
+      case Menu.NAMESPACE:
+        component = <NameSpace />;
+        break;
       default:
         break;
     }
