@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import classNames from "classnames";
 
-class Item extends Component {
+class Dropdown extends Component {
   constructor(props) {
     super(props);
   }
@@ -49,4 +49,4 @@ class Item extends Component {
   }
 }
 
-export default Item;
+export default Dropdown;
