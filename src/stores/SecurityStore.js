@@ -8,40 +8,22 @@ class SecurityStore extends EventEmitter {
   constructor() {
     super();
     Dispatcher.register(this.registerToActions);
-    this.credentialsType = [
-      {
-        description: "Username and Password",
-        value: "Username and Password",
-      },
-      {
-        description: "Secret (key:value)",
-        value: "Secret (key:value)",
-      },
-      {
-        description: "SSH private key and username",
-        value: "SSH private key and username",
-      },
-      {
-        description: "SSH Key pair",
-        value: "SSH Key pair",
-      },
-      {
-        description: "Certificate",
-        value: "Certificate",
-      },
-      {
-        description: "AWS Credentials",
-        value: "AWS Credentials",
-      },
-      {
-        description: "Azure Service principal",
-        value: "Azure Service principal",
-      },
-      {
-        description: "GCP Credentials",
-        value: "GCP Credentials",
-      },
-    ];
+    this.lookupOptionData = 
+    {"credComponentsList": [{
+    "credentialType":"AzureServicePrinciple",
+    "components":[{
+    "name":"subscriptionId","value":"Subscription ID"},
+    {"name":"clientId","va;lu":"Client ID"},
+    {"name":"tenant", "value":"Tenant"},
+    {"name":"secret", "value":"Secret"}]
+    }, {
+    "credentialType":"awsCredntial",
+    "components":[{
+    "name":"accessKey","value":"Access Key"},
+    {"name":"scretKey","value":"Secret Key"}]
+    }
+    ]}
+    
   }
 
   registerToActions = (action) => {
@@ -52,10 +34,21 @@ class SecurityStore extends EventEmitter {
       case ActionType.CREATE_SECURITY_FAILED:
         this.emit(EventType.CREATE_SECURITY_FAILED);
         break;
+      case ActionType.GET_LOOKUP_OPTIONS_DATA:
+        // this.lookupOptionData = action.value;
+        this.getCredentialComponents("AzureServicePrinciple");
+        break;
       default:
         break;
     }
   };
+
+  getCredentialComponents (credentialType) {
+    const credentialsList = this.lookupOptionData.credComponentsList;
+    const credential = credentialsList.find(item=> item.credentialType === credentialType);
+
+    return credential && credential.components;
+  }
 
   addEventListener = (eventName, callBack) => {
     this.on(eventName, callBack);
