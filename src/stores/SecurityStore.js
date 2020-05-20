@@ -8,22 +8,32 @@ class SecurityStore extends EventEmitter {
   constructor() {
     super();
     Dispatcher.register(this.registerToActions);
-    this.lookupOptionData = 
-    {"credComponentsList": [{
-    "credentialType":"AzureServicePrinciple",
-    "components":[{
-    "name":"subscriptionId","value":"Subscription ID"},
-    {"name":"clientId","va;lu":"Client ID"},
-    {"name":"tenant", "value":"Tenant"},
-    {"name":"secret", "value":"Secret"}]
-    }, {
-    "credentialType":"awsCredntial",
-    "components":[{
-    "name":"accessKey","value":"Access Key"},
-    {"name":"scretKey","value":"Secret Key"}]
-    }
-    ]}
-    
+    this.lookupOptionData = {
+      credComponentsList: [
+        {
+          credentialType: "AzureServicePrinciple",
+          components: [
+            {
+              name: "subscriptionId",
+              value: "Subscription ID",
+            },
+            { name: "clientId", value: "Client ID" },
+            { name: "tenant", value: "Tenant" },
+            { name: "secret", value: "Secret" },
+          ],
+        },
+        {
+          credentialType: "awsCredntial",
+          components: [
+            {
+              name: "accessKey",
+              value: "Access Key",
+            },
+            { name: "scretKey", value: "Secret Key" },
+          ],
+        },
+      ],
+    };
   }
 
   registerToActions = (action) => {
@@ -43,12 +53,23 @@ class SecurityStore extends EventEmitter {
     }
   };
 
-  getCredentialComponents (credentialType) {
+  getCredentialComponents(credentialType) {
     const credentialsList = this.lookupOptionData.credComponentsList;
-    const credential = credentialsList.find(item=> item.credentialType === credentialType);
+    const credential = credentialsList.find(
+      (item) => item.credentialType === credentialType
+    );
 
     return credential && credential.components;
   }
+
+  getCredentialTypeOptions = () => {
+    return this.lookupOptionData.credComponentsList.map((item) => {
+      return {
+        description: item.credentialType,
+        value: item.credentialType,
+      };
+    });
+  };
 
   addEventListener = (eventName, callBack) => {
     this.on(eventName, callBack);

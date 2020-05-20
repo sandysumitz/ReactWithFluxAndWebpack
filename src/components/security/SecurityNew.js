@@ -4,7 +4,8 @@ import SecurityStore from "../../stores/SecurityStore";
 import SecurityActionCreator from "../../actionCreator/SecurityActionCreator";
 import DashboardStore from "../../stores/DashBoardStore";
 
-import DropDown from "../../components/generic/Dropdown";
+import DropDown from "../generic/Dropdown";
+import TextBox from "../generic/TextBox";
 
 import Loader from "../loader/Loader";
 
@@ -26,10 +27,7 @@ class Security extends Component {
       message: "",
       cloudSrvc: "",
       credentialName: "LOB Azure Ops Credentials",
-      subscriptionId: "",
-      clientId: "",
-      tenant: "",
-      secret: "",
+      componentsToRender: null,
       cloudSrvcMissing: false,
       credentialNameMissing: false,
       subscriptionIdMissing: false,
@@ -40,6 +38,12 @@ class Security extends Component {
       clientIdHidden: true,
       tenantHidden: true,
       secretHidden: true,
+      credentialsType: {
+        header: "Credential Type",
+        name: "selectedCredential",
+        options: SecurityStore.getCredentialTypeOptions(),
+      },
+      selectedCredential: "",
     };
   };
 
@@ -98,6 +102,33 @@ class Security extends Component {
       [event.target.name + "Missing"]: false,
     });
   };
+  handleOnChange1 = (event) => {
+    this.setState({
+      [event.target.id]: event.target.value,
+    });
+  };
+  handleCredentialsTypeOnChange = (event) => {
+    const components = SecurityStore.getCredentialComponents(
+      event.target.value
+    );
+    let newState = { [event.target.name]: event.target.value };
+
+    let componentsToRender = components.map((component) => {
+      newState[component.name] = "";
+      return (
+        <TextBox
+          id={[component.name]}
+          labelName={[component.value]}
+          onChange={this.handleOnChange1}
+          value={this.state[component.name]}
+          required={true}
+        />
+      );
+    });
+    newState["componentsToRender"] = componentsToRender;
+    console.log("newState :", newState);
+    this.setState(newState);
+  };
   handleToggle = (event) => {
     this.setState({
       [event.target.id]: !this.state[event.target.id],
@@ -148,9 +179,10 @@ class Security extends Component {
   };
 
   render() {
-    if (this.state.loading || !this.state.provider) {
-      return <Loader />;
-    }
+    console.log("this.state --", this.state);
+    // if (this.state.loading || !this.state.provider) {
+    //   return <Loader />;
+    // }
     return (
       <div className="container-fluid">
         <div className="row page-titles">
@@ -165,6 +197,12 @@ class Security extends Component {
                 <h4 className="card-title">Security</h4>
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
+                    <DropDown
+                      data={this.state.credentialsType}
+                      value={this.state.selectedCredential}
+                      onChange={this.handleCredentialsTypeOnChange}
+                      required={true}
+                    />
                     {this.state.loading ? null : (
                       <DropDown
                         data={this.state.provider}
@@ -174,7 +212,7 @@ class Security extends Component {
                         required={true}
                       />
                     )}
-                    <div className="form-group">
+                    {/* <div className="form-group">
                       <label className="col-md-12 required">
                         Credential Name
                       </label>
@@ -277,7 +315,7 @@ class Security extends Component {
                       </div>
                     </div>
 
-                    <div className="form-group">
+                    <div className="form-group"> 
                       <label className="col-md-12 required">Secret</label>
                       <div className="col-md-12">
                         <input
@@ -321,7 +359,8 @@ class Security extends Component {
                           Reset
                         </button>
                       </div>
-                    </div>
+                    </div>*/}
+                    {this.state.componentsToRender}
                     <div className="form-group">
                       <h5 className="text-themecolor">{this.state.message}</h5>
                     </div>
