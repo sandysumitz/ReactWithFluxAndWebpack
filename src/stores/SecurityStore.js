@@ -8,6 +8,40 @@ class SecurityStore extends EventEmitter {
   constructor() {
     super();
     Dispatcher.register(this.registerToActions);
+    this.credentialsType = [
+      {
+        description: "Username and Password",
+        value: "Username and Password",
+      },
+      {
+        description: "Secret (key:value)",
+        value: "Secret (key:value)",
+      },
+      {
+        description: "SSH private key and username",
+        value: "SSH private key and username",
+      },
+      {
+        description: "SSH Key pair",
+        value: "SSH Key pair",
+      },
+      {
+        description: "Certificate",
+        value: "Certificate",
+      },
+      {
+        description: "AWS Credentials",
+        value: "AWS Credentials",
+      },
+      {
+        description: "Azure Service principal",
+        value: "Azure Service principal",
+      },
+      {
+        description: "GCP Credentials",
+        value: "GCP Credentials",
+      },
+    ];
   }
 
   registerToActions = (action) => {

@@ -40,6 +40,12 @@ class Security extends Component {
       clientIdHidden: true,
       tenantHidden: true,
       secretHidden: true,
+      credentialsType: {
+        header: "Credential Type",
+        name: "selectedCredential",
+        options: SecurityStore.credentialsType,
+      },
+      selectedCredential: "",
     };
   };
 
@@ -148,6 +154,10 @@ class Security extends Component {
   };
 
   render() {
+    console.log(
+      "this.state.selectedCredential --",
+      this.state.selectedCredential
+    );
     if (this.state.loading || !this.state.provider) {
       return <Loader />;
     }
@@ -165,6 +175,12 @@ class Security extends Component {
                 <h4 className="card-title">Security</h4>
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
+                    <DropDown
+                      data={this.state.credentialsType}
+                      value={this.state.selectedCredential}
+                      onChange={this.handleOnChange}
+                      required={true}
+                    />
                     {this.state.loading ? null : (
                       <DropDown
                         data={this.state.provider}
