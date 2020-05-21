@@ -18,32 +18,34 @@ class Security extends Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
-    this.state.provider = [];
     this.state.loading = true;
   }
 
   getInitialState = () => {
     return {
       message: "",
-      cloudSrvc: "",
       credentialName: "LOB Azure Ops Credentials",
       componentsToRender: null,
-      cloudSrvcMissing: false,
-      credentialNameMissing: false,
-      subscriptionIdMissing: false,
-      clientIdMissing: false,
-      tenantMissing: false,
-      secretMissing: false,
-      subscriptionIdHidden: true,
-      clientIdHidden: true,
-      tenantHidden: true,
-      secretHidden: true,
       credentialsType: {
         header: "Credential Type",
         name: "selectedCredential",
         options: SecurityStore.getCredentialTypeOptions(),
       },
       selectedCredential: "",
+      credentialList: [
+        {
+          credentialName: "InfyAzureCredential",
+          credentialType: "azureServicePrincipal",
+        },
+        {
+          credentialName: "InfyAWSCredential",
+          credentialType: "awsCredential",
+        },
+        {
+          credentialName: "InfyAWSCredential2020",
+          credentialType: "awsCredential",
+        },
+      ],
     };
   };
 
@@ -67,6 +69,26 @@ class Security extends Component {
     this.setState({
       provider,
       loading: false,
+    });
+  };
+
+  getCredentialList = () => {
+    return this.state.credentialList.map((credential) => {
+      return (
+        <tr key={credential.credentialName}>
+          <td>{credential.credentialName}</td>
+          <td>{credential.credentialType}</td>
+          <td>
+            <button
+              id={credential.credentialName}
+              onClick={this.handleDeleteCredential}
+              className="btn btn-danger"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      );
     });
   };
 
@@ -103,6 +125,8 @@ class Security extends Component {
     });
   };
   handleOnChange1 = (event) => {
+    console.log("[event.target.id]--", event.target);
+    console.log("[event.target.value]--", event.target.value);
     this.setState({
       [event.target.id]: event.target.value,
     });
@@ -112,27 +136,35 @@ class Security extends Component {
       event.target.value
     );
     let newState = { [event.target.name]: event.target.value };
-
-    let componentsToRender = components.map((component) => {
-      newState[component.name] = "";
-      return (
-        <TextBox
-          id={[component.name]}
-          labelName={[component.value]}
-          onChange={this.handleOnChange1}
-          value={this.state[component.name]}
-          required={true}
-        />
-      );
-    });
-    newState["componentsToRender"] = componentsToRender;
+    let componentsToRender = null;
+    let that = this;
+    if (event.target.value !== "") {
+      componentsToRender = components.map((component) => {
+        newState[component.name] = "";
+        return (
+          <TextBox
+            key={[component.name] + Date.now}
+            id={[component.name]}
+            labelName={[component.value]}
+            onChange={that.handleOnChange1}
+            value={that.state[component.name]}
+            required={true}
+          />
+        );
+      });
+    }
     console.log("newState :", newState);
+    newState["componentsToRender"] = componentsToRender;
     this.setState(newState);
   };
   handleToggle = (event) => {
     this.setState({
       [event.target.id]: !this.state[event.target.id],
     });
+  };
+  handleDeleteCredential = (event) => {
+    event.preventDefault();
+    console.log("event.target.id---", event.target.id);
   };
   handleSubmit = (event) => {
     event.preventDefault();
@@ -191,7 +223,26 @@ class Security extends Component {
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-lg-6 col-xlg-3 col-md-5">
+            <div className="card">
+              <div className="card-block">
+                <h4 className="card-title">Credential List</h4>
+                <div className="table-responsive">
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Credential Name</th>
+                        <th>Credential Type</th>
+                        <th>Delete</th>
+                      </tr>
+                    </thead>
+                    <tbody>{this.getCredentialList()}</tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-6 col-xlg-9 col-md-7">
             <div className="card">
               <div className="card-block">
                 <h4 className="card-title">Security</h4>
@@ -203,143 +254,20 @@ class Security extends Component {
                       onChange={this.handleCredentialsTypeOnChange}
                       required={true}
                     />
-                    {this.state.loading ? null : (
-                      <DropDown
-                        data={this.state.provider}
-                        value={this.state.cloudSrvc}
-                        onChange={this.handleOnChange}
-                        mandatory={this.state.cloudSrvcMissing}
-                        required={true}
-                      />
-                    )}
-                    {/* <div className="form-group">
-                      <label className="col-md-12 required">
-                        Credential Name
-                      </label>
-                      <div className="col-md-12">
-                        <input
-                          type="text"
-                          name="credentialName"
-                          required
-                          value={this.state.credentialName}
-                          onChange={this.handleOnChange}
-                          className={classNames(
-                            "form-control form-control-line",
-                            this.state.credentialNameMissing ? "mandatory" : ""
-                          )}
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <label className="col-md-12 required">
-                        Subscription ID
-                      </label>
-                      <div className="col-md-12">
-                        <input
-                          type={
-                            this.state.subscriptionIdHidden
-                              ? "password"
-                              : "text"
-                          }
-                          name="subscriptionId"
-                          required
-                          value={this.state.subscriptionId}
-                          onChange={this.handleOnChange}
-                          className={classNames(
-                            "form-control form-control-line",
-                            this.state.subscriptionIdMissing ? "mandatory" : ""
-                          )}
-                        />
-                        <i
-                          id="subscriptionIdHidden"
-                          className={classNames(
-                            "eye fa",
-                            this.state.subscriptionIdHidden
-                              ? "fa-eye-slash"
-                              : "fa-eye"
-                          )}
-                          onClick={this.handleToggle}
-                        ></i>
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <label className="col-md-12 required">Client ID</label>
-                      <div className="col-md-12">
-                        <input
-                          type={this.state.clientIdHidden ? "password" : "text"}
-                          name="clientId"
-                          required
-                          value={this.state.clientId}
-                          onChange={this.handleOnChange}
-                          className={classNames(
-                            "form-control form-control-line",
-                            this.state.clientIdMissing ? "mandatory" : ""
-                          )}
-                        />
-                        <i
-                          id="clientIdHidden"
-                          className={classNames(
-                            "eye fa",
-                            this.state.clientIdHidden
-                              ? "fa-eye-slash"
-                              : "fa-eye"
-                          )}
-                          onClick={this.handleToggle}
-                        ></i>
-                      </div>
-                    </div>
-
-                    <div className="form-group">
-                      <label className="col-md-12 required">Tenant</label>
-                      <div className="col-md-12">
-                        <input
-                          type={this.state.tenantHidden ? "password" : "text"}
-                          name="tenant"
-                          required
-                          value={this.state.tenant}
-                          onChange={this.handleOnChange}
-                          className={classNames(
-                            "form-control form-control-line",
-                            this.state.tenantMissing ? "mandatory" : ""
-                          )}
-                        />
-                        <i
-                          id="tenantHidden"
-                          className={classNames(
-                            "eye fa",
-                            this.state.tenantHidden ? "fa-eye-slash" : "fa-eye"
-                          )}
-                          onClick={this.handleToggle}
-                        ></i>
-                      </div>
-                    </div>
-
-                    <div className="form-group"> 
-                      <label className="col-md-12 required">Secret</label>
-                      <div className="col-md-12">
-                        <input
-                          type={this.state.secretHidden ? "password" : "text"}
-                          name="secret"
-                          required
-                          value={this.state.secret}
-                          onChange={this.handleOnChange}
-                          className={classNames(
-                            "form-control form-control-line",
-                            this.state.secretMissing ? "mandatory" : ""
-                          )}
-                        />
-                        <i
-                          id="secretHidden"
-                          className={classNames(
-                            "eye fa",
-                            this.state.secretHidden ? "fa-eye-slash" : "fa-eye"
-                          )}
-                          onClick={this.handleToggle}
-                        ></i>
-                      </div>
-                    </div>
-
+                    <TextBox
+                      id={"credentialName"}
+                      labelName={"Name"}
+                      onChange={this.handleOnChange1}
+                      value={this.state.credentialName}
+                      required={true}
+                    />
+                    <TextBox
+                      id={"credentialDescription"}
+                      labelName={"Description"}
+                      onChange={this.handleOnChange1}
+                      value={this.state.credentialDescription}
+                    />
+                    {this.state.componentsToRender}
                     <div className="form-group float-left">
                       <div className="col-sm-10">
                         <button
@@ -359,8 +287,7 @@ class Security extends Component {
                           Reset
                         </button>
                       </div>
-                    </div>*/}
-                    {this.state.componentsToRender}
+                    </div>
                     <div className="form-group">
                       <h5 className="text-themecolor">{this.state.message}</h5>
                     </div>

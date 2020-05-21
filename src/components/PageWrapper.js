@@ -1,6 +1,6 @@
 import React, { Component, createFactory } from "react";
 import CreateCluster from "./cluster/CreateCluster";
-import Security from "./security/Security";
+import Security from "./security/SecurityNew";
 import UnderConstruction from "./UnderConstruction";
 import DashBoard from "./dashboard/Dashboard";
 import NameSpace from "./namespace/CreateNameSpace";
