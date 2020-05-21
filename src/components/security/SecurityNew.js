@@ -32,21 +32,7 @@ class Security extends Component {
         options: SecurityStore.getCredentialTypeOptions(),
       },
       selectedCredential: "",
-      credentialList: [
-        // ToDo--- from db
-        {
-          credentialName: "InfyAzureCredential",
-          credentialType: "azureServicePrincipal",
-        },
-        {
-          credentialName: "InfyAWSCredential",
-          credentialType: "awsCredential",
-        },
-        {
-          credentialName: "InfyAWSCredential2020",
-          credentialType: "awsCredential",
-        },
-      ],
+      credentialList: [],
       credentialData: {},
     };
   };
@@ -63,6 +49,16 @@ class Security extends Component {
     this.setState({
       message: messages.SECURITY.SOMETHING_WRONG,
     });
+  };
+
+  credentialsReturned = () => {
+    this.setState({
+      credentialList: SecurityStore.credentialsList,
+    });
+  };
+
+  credentialsDeleted = () => {
+    SecurityActionCreator.getCredentialList(123);
   };
 
   loadLookupOptionsData = () => {
@@ -95,6 +91,7 @@ class Security extends Component {
   };
 
   componentDidMount() {
+    SecurityActionCreator.getCredentialList(123);
     this.loadLookupOptionsData();
     SecurityStore.addEventListener(
       EventType.CREATE_SECURITY_SUCCESS,
@@ -103,6 +100,14 @@ class Security extends Component {
     SecurityStore.addEventListener(
       EventType.CREATE_SECURITY_FAILED,
       this.securityAddingFailed
+    );
+    SecurityStore.addEventListener(
+      EventType.GET_CREDENTIALS_SUCCESS,
+      this.credentialsReturned
+    );
+    SecurityStore.addEventListener(
+      EventType.DELETE_CREDENTIAL_SUCCESS,
+      this.credentialsDeleted
     );
   }
   componentWillUnmount() {
@@ -113,6 +118,14 @@ class Security extends Component {
     SecurityStore.removeEventListener(
       EventType.CREATE_SECURITY_FAILED,
       this.securityAddingFailed
+    );
+    SecurityStore.removeEventListener(
+      EventType.GET_CREDENTIALS_SUCCESS,
+      this.credentialsReturned
+    );
+    SecurityStore.removeEventListener(
+      EventType.DELETE_CREDENTIAL_SUCCESS,
+      this.credentialsDeleted
     );
   }
 

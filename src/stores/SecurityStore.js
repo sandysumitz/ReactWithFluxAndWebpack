@@ -4,7 +4,7 @@ import ActionType from "../constants/actionType";
 import EventType from "../constants/eventType";
 
 class SecurityStore extends EventEmitter {
-  const;
+  credentialsList = [];
   constructor() {
     super();
     Dispatcher.register(this.registerToActions);
@@ -49,6 +49,13 @@ class SecurityStore extends EventEmitter {
       case ActionType.GET_LOOKUP_OPTIONS_DATA:
         // this.lookupOptionData = action.value;
         this.getCredentialComponents("AzureServicePrinciple");
+        break;
+      case ActionType.GET_CREDENTIALS_SUCCESS:
+        this.credentialsList = action.data;
+        this.emit(EventType.GET_CREDENTIALS_SUCCESS);
+        break;
+      case ActionType.CREDENTIAL_DELETED:
+        this.emit(EventType.DELETE_CREDENTIAL_SUCCESS);
         break;
       default:
         break;
