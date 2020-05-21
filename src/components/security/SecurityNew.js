@@ -24,15 +24,16 @@ class Security extends Component {
   getInitialState = () => {
     return {
       message: "",
-      credentialName: "LOB Azure Ops Credentials",
-      componentsToRender: null,
+      credentialName: "",
       credentialsType: {
+        // ToDo--- from db
         header: "Credential Type",
         name: "selectedCredential",
         options: SecurityStore.getCredentialTypeOptions(),
       },
       selectedCredential: "",
       credentialList: [
+        // ToDo--- from db
         {
           credentialName: "InfyAzureCredential",
           credentialType: "azureServicePrincipal",
@@ -46,6 +47,7 @@ class Security extends Component {
           credentialType: "awsCredential",
         },
       ],
+      credentialData: {},
     };
   };
 
@@ -119,44 +121,63 @@ class Security extends Component {
     this.setState(this.getInitialState());
   };
   handleOnChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
-      [event.target.name + "Missing"]: false,
-    });
-  };
-  handleOnChange1 = (event) => {
     console.log("[event.target.id]--", event.target);
     console.log("[event.target.value]--", event.target.value);
-    this.setState({
-      [event.target.id]: event.target.value,
-    });
+
+    let credentialData = Object.assign({}, this.state.credentialData);
+    credentialData[event.target.id] = event.target.value;
+    this.setState({ credentialData: credentialData });
   };
   handleCredentialsTypeOnChange = (event) => {
-    const components = SecurityStore.getCredentialComponents(
-      event.target.value
-    );
-    let newState = { [event.target.name]: event.target.value };
-    let componentsToRender = null;
-    let that = this;
-    if (event.target.value !== "") {
-      componentsToRender = components.map((component) => {
-        newState[component.name] = "";
-        return (
-          <TextBox
-            key={[component.name] + Date.now}
-            id={[component.name]}
-            labelName={[component.value]}
-            onChange={that.handleOnChange1}
-            value={that.state[component.name]}
-            required={true}
-          />
-        );
-      });
-    }
-    console.log("newState :", newState);
-    newState["componentsToRender"] = componentsToRender;
-    this.setState(newState);
+    this.setState({
+      credentialData: {},
+      [event.target.name]: event.target.value,
+    });
   };
+
+  getComponentsToRender = () => {
+    const components = SecurityStore.getCredentialComponents(
+      this.state.selectedCredential
+    );
+    if (!components) {
+      return null;
+    }
+    let toRender = [];
+    let credentialNameComp = (
+      <TextBox
+        id={"credentialName"}
+        labelName={"Name"}
+        onChange={this.handleOnChange}
+        value={this.state.credentialData.credentialName}
+        required={true}
+      />
+    );
+    let credentialDescComp = (
+      <TextBox
+        id={"credentialDescription"}
+        labelName={"Description"}
+        onChange={this.handleOnChange}
+        value={this.state.credentialData.credentialDescription}
+      />
+    );
+    toRender.push(credentialNameComp);
+    toRender.push(credentialDescComp);
+    let dynamicComp = components.map((component) => {
+      return (
+        <TextBox
+          key={[component.name] + Date.now}
+          id={[component.name]}
+          labelName={[component.value]}
+          onChange={this.handleOnChange}
+          value={this.state.credentialData[component.name]}
+          required={true}
+        />
+      );
+    });
+    toRender.push(dynamicComp);
+    return toRender;
+  };
+
   handleToggle = (event) => {
     this.setState({
       [event.target.id]: !this.state[event.target.id],
@@ -211,10 +232,10 @@ class Security extends Component {
   };
 
   render() {
-    console.log("this.state --", this.state);
-    // if (this.state.loading || !this.state.provider) {
-    //   return <Loader />;
-    // }
+    console.log("this.state---", this.state);
+    if (this.state.loading) {
+      return <Loader />;
+    }
     return (
       <div className="container-fluid">
         <div className="row page-titles">
@@ -254,20 +275,8 @@ class Security extends Component {
                       onChange={this.handleCredentialsTypeOnChange}
                       required={true}
                     />
-                    <TextBox
-                      id={"credentialName"}
-                      labelName={"Name"}
-                      onChange={this.handleOnChange1}
-                      value={this.state.credentialName}
-                      required={true}
-                    />
-                    <TextBox
-                      id={"credentialDescription"}
-                      labelName={"Description"}
-                      onChange={this.handleOnChange1}
-                      value={this.state.credentialDescription}
-                    />
-                    {this.state.componentsToRender}
+
+                    {this.getComponentsToRender()}
                     <div className="form-group float-left">
                       <div className="col-sm-10">
                         <button

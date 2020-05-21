@@ -1,15 +1,16 @@
 import React, { Component } from "react";
+import classNames from "classnames";
 
 class Loader extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     return (
       <div
-        style={{
-          zIndex: "999999",
-          width: "100%",
-          height: "100%",
-          position: "fixed",
-        }}
+        className={classNames(
+          !this.props.position ? "loaderWithPosFixed" : "loaderWithoutPosFixed"
+        )}
       >
         <img
           src="../src/styles/images/loader1.gif"
