@@ -137,7 +137,7 @@ class Security extends Component {
       return true;
     }
     return components.some((component) => {
-      return !credentialData[component.name];
+      return (component.isRequired && !credentialData[component.name]);
     });
   };
   handleCredentialsTypeOnChange = (event) => {
@@ -201,48 +201,27 @@ class Security extends Component {
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    const {
-      cloudSrvc,
-      credentialName,
-      subscriptionId,
-      clientId,
-      tenant,
-      secret,
-    } = this.state;
-
-    if (
-      !cloudSrvc ||
-      !credentialName ||
-      !subscriptionId ||
-      !clientId ||
-      !tenant ||
-      !secret
-    ) {
+    if ( this.isInValid() ) {
       this.setState({
-        message: messages.SECURITY.FIELD_MISSING,
-        cloudSrvcMissing: !cloudSrvc,
-        credentialNameMissing: !credentialName,
-        subscriptionIdMissing: !subscriptionId,
-        clientIdMissing: !clientId,
-        tenantMissing: !tenant,
-        secretMissing: !secret,
+        message: messages.SECURITY.FIELD_MISSING
       });
       return false;
     }
+    let that = this;
+    let selectedComponentItems = {};
+    let selectedCredentialComponents = SecurityStore.getCredentialComponents(
+      this.state.selectedCredential
+    );
+    selectedCredentialComponents.map(component => {
+      selectedComponentItems[component.name] = that.state.credentialData[component.name];
+    })
     //TODO PARAMETER
     SecurityActionCreator.createSecurity({
       userId: "123", //TODO - Lgged in user id, correct after development of login
-      provider: this.state.cloudSrvc,
-      name: this.state.credentialName,
-      credntials: {
-        subscriptionID: this.state.subscriptionId,
-        clientID: this.state.clientId,
-        tenant: this.state.tenant,
-        secret: this.state.secret,
-      },
+      name: this.state.credentialData.credentialName,
+      azurePrincipal: selectedComponentItems
     });
   };
-
   render() {
     console.log("this.state---", this.state);
     if (this.state.loading) {

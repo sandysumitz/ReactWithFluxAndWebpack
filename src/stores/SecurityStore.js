@@ -16,10 +16,11 @@ class SecurityStore extends EventEmitter {
             {
               name: "subscriptionId",
               value: "Subscription ID",
+              isRequired: true
             },
-            { name: "clientId", value: "Client ID" },
-            { name: "tenant", value: "Tenant" },
-            { name: "secret", value: "Secret" },
+            { name: "clientId", value: "Client ID", isRequired: true },
+            { name: "tenant", value: "Tenant", isRequired:true },
+            { name: "secret", value: "Secret", isRequired: false },
           ],
         },
         {
@@ -28,8 +29,9 @@ class SecurityStore extends EventEmitter {
             {
               name: "accessKey",
               value: "Access Key",
+              isRequired: true
             },
-            { name: "scretKey", value: "Secret Key" },
+            { name: "scretKey", value: "Secret Key", isRequired: false },
           ],
         },
       ],
