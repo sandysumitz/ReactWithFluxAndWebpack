@@ -128,6 +128,18 @@ class Security extends Component {
     credentialData[event.target.id] = event.target.value;
     this.setState({ credentialData: credentialData });
   };
+  isInValid = () => {
+    const { credentialData, selectedCredential } = this.state;
+    const components = SecurityStore.getCredentialComponents(
+      selectedCredential
+    );
+    if (!components) {
+      return true;
+    }
+    return components.some((component) => {
+      return !credentialData[component.name];
+    });
+  };
   handleCredentialsTypeOnChange = (event) => {
     this.setState({
       credentialData: {},
@@ -280,6 +292,7 @@ class Security extends Component {
                     <div className="form-group float-left">
                       <div className="col-sm-10">
                         <button
+                          disabled={this.isInValid()}
                           onClick={this.handleSubmit}
                           className="btn btn-success"
                         >
