@@ -8,34 +8,34 @@ class SecurityStore extends EventEmitter {
   constructor() {
     super();
     Dispatcher.register(this.registerToActions);
-    this.lookupOptionData = {
-      credComponentsList: [
-        {
-          credentialType: "AzureServicePrinciple",
-          components: [
-            {
-              name: "subscriptionId",
-              value: "Subscription ID",
-              isRequired: true
-            },
-            { name: "clientId", value: "Client ID", isRequired: true },
-            { name: "tenant", value: "Tenant", isRequired:true },
-            { name: "secret", value: "Secret", isRequired: false },
-          ],
-        },
-        {
-          credentialType: "awsCredntial",
-          components: [
-            {
-              name: "accessKey",
-              value: "Access Key",
-              isRequired: true
-            },
-            { name: "scretKey", value: "Secret Key", isRequired: false },
-          ],
-        },
-      ],
-    };
+    // this.lookupOptionData = {
+    //   credComponentsList: [
+    //     {
+    //       credentialType: "AzureServicePrinciple",
+    //       components: [
+    //         {
+    //           name: "subscriptionId",
+    //           value: "Subscription ID",
+    //           isRequired: true
+    //         },
+    //         { name: "clientId", value: "Client ID", isRequired: true },
+    //         { name: "tenant", value: "Tenant", isRequired:true },
+    //         { name: "secret", value: "Secret", isRequired: false },
+    //       ],
+    //     },
+    //     {
+    //       credentialType: "awsCredntial",
+    //       components: [
+    //         {
+    //           name: "accessKey",
+    //           value: "Access Key",
+    //           isRequired: true
+    //         },
+    //         { name: "scretKey", value: "Secret Key", isRequired: false },
+    //       ],
+    //     },
+    //   ],
+    // };
   }
 
   registerToActions = (action) => {
@@ -47,8 +47,9 @@ class SecurityStore extends EventEmitter {
         this.emit(EventType.CREATE_SECURITY_FAILED);
         break;
       case ActionType.GET_LOOKUP_OPTIONS_DATA:
-        // this.lookupOptionData = action.value;
-        this.getCredentialComponents("AzureServicePrinciple");
+        this.lookupOptionData = action.value;
+        this.emit(EventType.GET_LOOKUP_OPTIONS);
+        // this.getCredentialComponents("AzureServicePrinciple");
         break;
       case ActionType.GET_CREDENTIALS_SUCCESS:
         this.credentialsList = action.data;
@@ -72,7 +73,8 @@ class SecurityStore extends EventEmitter {
   }
 
   getCredentialTypeOptions = () => {
-    return this.lookupOptionData.credComponentsList.map((item) => {
+    //NEED CORRECTION
+    return this.lookupOptionData.options.credentialType.map((item) => {
       return {
         description: item.credentialType,
         value: item.credentialType,

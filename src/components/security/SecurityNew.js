@@ -18,7 +18,7 @@ class Security extends Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
-    this.state.loading = true;
+    this.state.loading = false;
   }
 
   getInitialState = () => {
@@ -29,7 +29,7 @@ class Security extends Component {
         // ToDo--- from db
         header: "Credential Type",
         name: "selectedCredential",
-        options: SecurityStore.getCredentialTypeOptions(),
+        options: [],
       },
       selectedCredential: "",
       credentialList: [],
@@ -58,20 +58,26 @@ class Security extends Component {
   };
 
   credentialsDeleted = () => {
-    SecurityActionCreator.getCredentialList(123);
+    SecurityActionCreator.getCredentialList({userID: 123});
   };
 
-  loadLookupOptionsData = () => {
-    const provider = DashboardStore.getDropdownData("Provider", "cloudSrvc");
+  getLookupOptionData = () => {
+    // const option = SecurityStore.getCredentialTypeOptions();
 
-    this.setState({
-      provider,
-      loading: false,
-    });
+    // this.setState({
+    //   credentialsType: {
+    //     // ToDo--- from db
+    //     header: "Credential Type",
+    //     name: "selectedCredential",
+    //     options: option,
+    //   },
+    //   loading: false,
+    // });
   };
 
   getCredentialList = () => {
-    return this.state.credentialList.map((credential) => {
+    return this.state.credentialList && this.state.credentialList.length > 0 ? 
+    this.state.credentialList.map((credential) => {
       return (
         <tr key={credential.credentialName}>
           <td>{credential.credentialName}</td>
@@ -87,12 +93,23 @@ class Security extends Component {
           </td>
         </tr>
       );
-    });
+    }) : null;
   };
 
   componentDidMount() {
-    SecurityActionCreator.getCredentialList(123);
-    this.loadLookupOptionsData();
+    SecurityActionCreator.getCredentialList({userID: "ik8smpuser"});
+    // const option = SecurityStore.getCredentialTypeOptions();
+
+    // this.setState({
+    //   credentialsType: {
+    //     // ToDo--- from db
+    //     header: "Credential Type",
+    //     name: "selectedCredential",
+    //     options: option,
+    //   },
+    //   loading: false,
+    // });
+
     SecurityStore.addEventListener(
       EventType.CREATE_SECURITY_SUCCESS,
       this.securityAdded
@@ -108,6 +125,10 @@ class Security extends Component {
     SecurityStore.addEventListener(
       EventType.DELETE_CREDENTIAL_SUCCESS,
       this.credentialsDeleted
+    );
+    SecurityStore.addEventListener(
+      EventType.GET_LOOKUP_OPTIONS,
+      this.getLookupOptionData
     );
   }
   componentWillUnmount() {
@@ -126,6 +147,10 @@ class Security extends Component {
     SecurityStore.removeEventListener(
       EventType.DELETE_CREDENTIAL_SUCCESS,
       this.credentialsDeleted
+    );
+    SecurityStore.removeEventListener(
+      EventType.GET_LOOKUP_OPTIONS,
+      this.getLookupOptionData
     );
   }
 
@@ -230,7 +255,7 @@ class Security extends Component {
     })
     //TODO PARAMETER
     SecurityActionCreator.createSecurity({
-      userId: "123", //TODO - Lgged in user id, correct after development of login
+      userId: "ik8smpuser", //TODO - Lgged in user id, correct after development of login
       name: this.state.credentialData.credentialName,
       azurePrincipal: selectedComponentItems
     });
