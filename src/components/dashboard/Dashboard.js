@@ -2,10 +2,6 @@ import React, { Component, createFactory } from "react";
 import DashboardActionCreator from "../../actionCreator/DashboardActionCreator";
 
 class Dashboard extends Component {
-  componentDidMount() {
-    DashboardActionCreator.loadOptionsData();
-  }
-
   render() {
     return (
       <div className="container-fluid">

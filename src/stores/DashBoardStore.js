@@ -27,7 +27,7 @@ class DashBoardStore extends EventEmitter {
   };
 
   getOptions = () => {
-    const options = this.lookupOptionData;
+    const options = this.lookupOptionData ? this.lookupOptionData.options : {};
     const data = Object.keys(options).map((_key) => {
       const item = options[_key];
       return {
@@ -84,6 +84,12 @@ class DashBoardStore extends EventEmitter {
           return Object.keys(option)[0] === "credentials";
         });
         options = _filter5 && _filter5["credentials"];
+        break;
+      case "Credential Type":
+        const _filter6 = optionsData.find((option) => {
+          return Object.keys(option)[0] === "credentialType";
+        });
+        options = _filter6["credentialType"];
         break;
     }
 

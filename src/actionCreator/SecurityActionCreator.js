@@ -10,7 +10,7 @@ class SecurityActionCreator {
     WebApi.apiPost(config.API_URL + url.SAVE_CREDENTIALS, parameterList)
       .then((response) => {
         const action = {
-          actionType: ActionType.CREATE_SECURITY_SUCCESS
+          actionType: ActionType.CREATE_SECURITY_SUCCESS,
         };
         Dispatcher.dispatch(action);
       })
@@ -26,7 +26,7 @@ class SecurityActionCreator {
       .then((response) => {
         const action = {
           actionType: ActionType.GET_CREDENTIALS_SUCCESS,
-          data: response
+          data: response.data ? response.data.credentialNames : [],
         };
         Dispatcher.dispatch(action);
       })
@@ -36,7 +36,7 @@ class SecurityActionCreator {
         };
         Dispatcher.dispatch(action);
       });
-    // let 
+    // let
     // credentialList = [
     //   // ToDo--- from db
     //   {
@@ -66,7 +66,7 @@ class SecurityActionCreator {
     WebApi.apiPost(config.API_URL + url.DELETE_CREDENTIALS, parameterList)
       .then((response) => {
         const action = {
-          actionType: ActionType.CREDENTIAL_DELETED
+          actionType: ActionType.CREDENTIAL_DELETED,
         };
         Dispatcher.dispatch(action);
       })

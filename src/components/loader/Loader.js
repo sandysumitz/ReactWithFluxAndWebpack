@@ -13,15 +13,11 @@ class Loader extends Component {
         )}
       >
         <img
+          className={classNames(
+            !this.props.position ? "loaderBig" : "loaderSmall"
+          )}
           src="../src/styles/images/loader1.gif"
           alt="loader"
-          style={{
-            width: "100px",
-            top: "50%",
-            height: "100px",
-            position: "relative",
-            left: "40%",
-          }}
         />
       </div>
     );

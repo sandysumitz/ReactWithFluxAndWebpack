@@ -25,15 +25,11 @@ class Security extends Component {
     return {
       message: "",
       credentialName: "",
-      credentialsType: {
-        // ToDo--- from db
-        header: "Credential Type",
-        name: "selectedCredential",
-        options: [],
-      },
+      credentialsType: null,
       selectedCredential: "",
       credentialList: [],
-      credentialData: {},
+      credentialData: null,
+      renderedOn: Date.now,
     };
   };
 
@@ -53,62 +49,56 @@ class Security extends Component {
 
   credentialsReturned = () => {
     this.setState({
-      credentialList: SecurityStore.credentialsList,
+      renderedOn: Date.now,
     });
   };
 
   credentialsDeleted = () => {
-    SecurityActionCreator.getCredentialList({userID: 123});
+    this.setState({
+      renderedOn: Date.now,
+    });
+    SecurityActionCreator.getCredentialList({ userID: "ik8smpuser" });
   };
 
   getLookupOptionData = () => {
-    // const option = SecurityStore.getCredentialTypeOptions();
-
-    // this.setState({
-    //   credentialsType: {
-    //     // ToDo--- from db
-    //     header: "Credential Type",
-    //     name: "selectedCredential",
-    //     options: option,
-    //   },
-    //   loading: false,
-    // });
+    const credentialType = DashboardStore.getDropdownData(
+      "Credential Type",
+      "selectedCredential"
+    );
+    this.setState({
+      credentialsType: credentialType,
+    });
   };
 
   getCredentialList = () => {
-    return this.state.credentialList && this.state.credentialList.length > 0 ? 
-    this.state.credentialList.map((credential) => {
-      return (
-        <tr key={credential.credentialName}>
-          <td>{credential.credentialName}</td>
-          <td>{credential.credentialType}</td>
-          <td>
-            <button
-              id={credential.credentialName}
-              onClick={this.handleDeleteCredential}
-              className="btn btn-danger"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      );
-    }) : null;
+    const credentialList = SecurityStore.credentialsList;
+    console.log("credentialList---", credentialList);
+    return credentialList && credentialList.length > 0 ? (
+      credentialList.map((credential) => {
+        return (
+          <tr key={credential.credentialName}>
+            <td>{credential.credentialName}</td>
+            <td>{credential.credentialType}</td>
+            <td>
+              <button
+                id={credential.credentialName}
+                onClick={this.handleDeleteCredential}
+                className="btn btn-danger"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        );
+      })
+    ) : (
+      <Loader position={true} />
+    );
   };
 
   componentDidMount() {
-    SecurityActionCreator.getCredentialList({userID: "ik8smpuser"});
-    // const option = SecurityStore.getCredentialTypeOptions();
-
-    // this.setState({
-    //   credentialsType: {
-    //     // ToDo--- from db
-    //     header: "Credential Type",
-    //     name: "selectedCredential",
-    //     options: option,
-    //   },
-    //   loading: false,
-    // });
+    SecurityActionCreator.getCredentialList({ userID: "ik8smpuser" });
+    this.getLookupOptionData();
 
     SecurityStore.addEventListener(
       EventType.CREATE_SECURITY_SUCCESS,
@@ -159,9 +149,6 @@ class Security extends Component {
     this.setState(this.getInitialState());
   };
   handleOnChange = (event) => {
-    console.log("[event.target.id]--", event.target);
-    console.log("[event.target.value]--", event.target.value);
-
     let credentialData = Object.assign({}, this.state.credentialData);
     credentialData[event.target.id] = event.target.value;
     this.setState({ credentialData: credentialData });
@@ -171,11 +158,11 @@ class Security extends Component {
     const components = SecurityStore.getCredentialComponents(
       selectedCredential
     );
-    if (!components) {
+    if (!components || !credentialData || !credentialData.credentialName) {
       return true;
     }
     return components.some((component) => {
-      return (component.isRequired && !credentialData[component.name]);
+      return !credentialData[component.value];
     });
   };
   handleCredentialsTypeOnChange = (event) => {
@@ -215,11 +202,11 @@ class Security extends Component {
     let dynamicComp = components.map((component) => {
       return (
         <TextBox
-          key={[component.name] + Date.now}
-          id={[component.name]}
-          labelName={[component.value]}
+          key={[component.value] + Date.now}
+          id={[component.value]}
+          labelName={[component.name]}
           onChange={this.handleOnChange}
-          value={this.state.credentialData[component.name]}
+          value={this.state.credentialData[component.value]}
           required={true}
         />
       );
@@ -236,12 +223,16 @@ class Security extends Component {
   handleDeleteCredential = (event) => {
     event.preventDefault();
     console.log("event.target.id---", event.target.id);
+    const payLoad = {
+      credentialName: event.target.id,
+    };
+    SecurityActionCreator.deleteCredential(payLoad);
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    if ( this.isInValid() ) {
+    if (this.isInValid()) {
       this.setState({
-        message: messages.SECURITY.FIELD_MISSING
+        message: messages.SECURITY.FIELD_MISSING,
       });
       return false;
     }
@@ -250,14 +241,15 @@ class Security extends Component {
     let selectedCredentialComponents = SecurityStore.getCredentialComponents(
       this.state.selectedCredential
     );
-    selectedCredentialComponents.map(component => {
-      selectedComponentItems[component.name] = that.state.credentialData[component.name];
-    })
+    selectedCredentialComponents.map((component) => {
+      selectedComponentItems[component.name] =
+        that.state.credentialData[component.name];
+    });
     //TODO PARAMETER
     SecurityActionCreator.createSecurity({
       userId: "ik8smpuser", //TODO - Lgged in user id, correct after development of login
       name: this.state.credentialData.credentialName,
-      azurePrincipal: selectedComponentItems
+      azurePrincipal: selectedComponentItems,
     });
   };
   render() {
@@ -304,7 +296,6 @@ class Security extends Component {
                       onChange={this.handleCredentialsTypeOnChange}
                       required={true}
                     />
-
                     {this.getComponentsToRender()}
                     <div className="form-group float-left">
                       <div className="col-sm-10">

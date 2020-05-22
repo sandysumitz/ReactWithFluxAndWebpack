@@ -56,6 +56,7 @@ class SecurityStore extends EventEmitter {
         this.emit(EventType.GET_CREDENTIALS_SUCCESS);
         break;
       case ActionType.CREDENTIAL_DELETED:
+        this.credentialsList = [];
         this.emit(EventType.DELETE_CREDENTIAL_SUCCESS);
         break;
       default:
