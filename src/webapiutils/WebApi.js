@@ -28,6 +28,20 @@ class WebAPi {
         });
     });
   };
+
+  apiDelete = (uri, parameterList) => {
+    var response;
+    return new Promise((resolve, reject) => {
+      response = axios
+        .delete(uri, { data: parameterList })
+        .then((response) => {
+          return resolve(response);
+        })
+        .catch((e) => {
+          return reject(e);
+        });
+    });
+  };
 }
 
 export default new WebAPi();

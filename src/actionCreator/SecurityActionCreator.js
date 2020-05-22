@@ -36,34 +36,9 @@ class SecurityActionCreator {
         };
         Dispatcher.dispatch(action);
       });
-    // let
-    // credentialList = [
-    //   // ToDo--- from db
-    //   {
-    //     credentialName: "InfyAzureCredential",
-    //     credentialType: "azureServicePrincipal",
-    //   },
-    //   {
-    //     credentialName: "InfyAzureCredential",
-    //     credentialType: "azureServicePrincipal2020",
-    //   },
-    //   {
-    //     credentialName: "InfyAWSCredential",
-    //     credentialType: "awsCredential",
-    //   },
-    //   {
-    //     credentialName: "InfyAWSCredential2020",
-    //     credentialType: "awsCredential",
-    //   }
-    // ];
-    // const action = {
-    //   actionType: ActionType.GET_CREDENTIALS_SUCCESS,
-    //     data: credentialList
-    //   };
-    // Dispatcher.dispatch(action);
   };
   deleteCredential = (parameterList) => {
-    WebApi.apiPost(config.API_URL + url.DELETE_CREDENTIALS, parameterList)
+    WebApi.apiDelete(config.API_URL + url.DELETE_CREDENTIALS, parameterList)
       .then((response) => {
         const action = {
           actionType: ActionType.CREDENTIAL_DELETED,

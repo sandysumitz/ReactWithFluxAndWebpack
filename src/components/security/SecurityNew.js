@@ -225,6 +225,7 @@ class Security extends Component {
     console.log("event.target.id---", event.target.id);
     const payLoad = {
       credentialName: event.target.id,
+      userID: "ik8smpuser",
     };
     SecurityActionCreator.deleteCredential(payLoad);
   };
