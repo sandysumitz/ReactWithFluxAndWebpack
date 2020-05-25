@@ -189,16 +189,7 @@ class Security extends Component {
         required={true}
       />
     );
-    let credentialDescComp = (
-      <TextBox
-        id={"credentialDescription"}
-        labelName={"Description"}
-        onChange={this.handleOnChange}
-        value={this.state.credentialData.credentialDescription}
-      />
-    );
     toRender.push(credentialNameComp);
-    toRender.push(credentialDescComp);
     let dynamicComp = components.map((component) => {
       return (
         <TextBox
