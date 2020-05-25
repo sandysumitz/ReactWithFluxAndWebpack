@@ -1,7 +1,20 @@
 import React, { Component, createFactory } from "react";
 import DashboardActionCreator from "../../actionCreator/DashboardActionCreator";
+// import swal from "sweetalert";
 
 class Dashboard extends Component {
+  componentDidMount() {}
+  handleClick = () => {
+    // swal({
+    //   title: "Are you sure?",
+    //   buttons: true,
+    // }).then((value) => {
+    //   console.log("valuee---", value);
+    // });
+  };
+  callbackMethod = () => {
+    console.log("callbackMethod---");
+  };
   render() {
     return (
       <div className="container-fluid">
@@ -15,6 +28,7 @@ class Dashboard extends Component {
             <div className="card">
               <div className="card-block">
                 <img
+                  onClick={this.handleClick}
                   src="../src/styles/images/UnderConstruction_xlarge.jpg"
                   alt="under construction"
                 ></img>

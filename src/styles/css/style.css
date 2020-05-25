@@ -10343,3 +10343,14 @@ pre {
   position: relative;
   left: 40%;
 }
+
+.swal-modal {
+  background-color: floralwhite;
+  font-family: cursive !important;
+  font-weight: inherit !important;
+}
+
+.swal-modal button {
+  font-family: cursive !important;
+  font-weight: inherit !important;
+}
