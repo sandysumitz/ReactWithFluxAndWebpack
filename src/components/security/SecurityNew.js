@@ -292,7 +292,7 @@ class Security extends Component {
           <div className="col-lg-6 col-xlg-9 col-md-7">
             <div className="card">
               <div className="card-block">
-                <h4 className="card-title">Security</h4>
+                <h4 className="card-title">Create Credential</h4>
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
                     <DropDown
