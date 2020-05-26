@@ -25,7 +25,6 @@ class Security extends Component {
     return {
       message: "",
       credentialName: "",
-      credentialsType: null,
       selectedCredential: "",
       credentialList: [],
       credentialData: null,
@@ -199,6 +198,20 @@ class Security extends Component {
           onChange={this.handleOnChange}
           value={this.state.credentialData[component.value]}
           required={true}
+          isPassword={this.state[component.value+"Hidden"] === undefined ? true
+            : !this.state[component.value+"Hidden"]}
+          showEyeIcon={true}
+          eyeIcon={
+            <i
+              id={[component.value]+"Hidden"}
+              className={classNames(
+                "eye fa",
+                this.state[component.value+"Hidden"]
+                  ? "fa-eye-slash"
+                  : "fa-eye"
+              )}
+              onClick={this.handleEyeToggle}
+              ></i>}
         />
       );
     });
@@ -206,7 +219,7 @@ class Security extends Component {
     return toRender;
   };
 
-  handleToggle = (event) => {
+  handleEyeToggle = (event) => {
     this.setState({
       [event.target.id]: !this.state[event.target.id],
     });

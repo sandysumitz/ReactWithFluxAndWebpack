@@ -6,7 +6,7 @@ class TextBox extends Component {
     super(props);
   }
   render() {
-    const { labelName, onChange, value, required, isPassword, id } = this.props;
+    const { labelName, onChange, value, required, isPassword, id, showEyeIcon, eyeIcon } = this.props;
     return (
       <div className="form-group">
         <label className={classNames("col-md-12", !required ? "" : "required")}>
@@ -23,6 +23,7 @@ class TextBox extends Component {
               required && !value ? "mandatory" : ""
             )}
           />
+          {showEyeIcon ? eyeIcon : null}
         </div>
       </div>
     );
