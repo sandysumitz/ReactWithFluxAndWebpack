@@ -247,8 +247,8 @@ class Security extends Component {
       this.state.selectedCredential
     );
     selectedCredentialComponents.map((component) => {
-      selectedComponentItems[component.name] =
-        that.state.credentialData[component.name];
+      selectedComponentItems[component.value] =
+        that.state.credentialData[component.value];
     });
     //TODO PARAMETER
     SecurityActionCreator.createSecurity({
