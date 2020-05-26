@@ -28,13 +28,13 @@ class CreateCluster extends Component {
   getInitialState = () => {
     return {
       message: "",
-      cloudSrvc: "Azure",
+      cloudSrvc: "AzureNative",
       masterCount: "1",
       nodeCount: "",
       masterSize: "Standard_B2s",
       nodeSize: "Standard_B1ms",
       clusterName: "",
-      credentials: "Operations",
+      credentials: "",//"Operations",
       imageName: "ubuntu",
       kubeDashboard: "KubernetesDashboard",
       loggingEnabled: "Y",
@@ -129,7 +129,7 @@ class CreateCluster extends Component {
   handleOnProviderChange = (event) => {
     let nodeSize = "";
     switch (event.target.value) {
-      case "Azure":
+      case "AzureNative":
         nodeSize = "Standard_B1ms";
         break;
       case "AKS":
@@ -140,22 +140,21 @@ class CreateCluster extends Component {
     }
     this.setState({
       [event.target.name]: event.target.value,
-      [event.target.name + "Missing"]: !nodeSize,
+      // [event.target.name + "Missing"]: !nodeSize,
       nodeSize,
     });
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    const { nodeCount, clusterName, cloudSrvc, credentialName } = this.state;
+    const { nodeCount, clusterName, cloudSrvc, credentials } = this.state;
 
-    if (!nodeCount || !clusterName || !cloudSrvc) {
-      // || !credentialName) { TODO - correct when lookupoption api return the value
+    if (!nodeCount || !clusterName || !cloudSrvc || !credentials) {
       this.setState({
         message: messages.CLUSTER.FIELD_MISSING,
         nodeCountMissing: !nodeCount,
         cloudSrvcMissing: !cloudSrvc,
         clusterNameMissing: !clusterName,
-        // credentialsMissing: !credentialName -- TODO: waiting for api correction
+        credentialsMissing: !credentials
       });
       return false;
     }
@@ -163,10 +162,10 @@ class CreateCluster extends Component {
     const requestParams = {
       cloudSrvc: this.state.cloudSrvc,
       masterCount:
-        this.state.cloudSrvc === "Azure" ? this.state.masterCount : undefined,
+        this.state.cloudSrvc === "AzureNative" ? this.state.masterCount : undefined,
       nodeCount: this.state.nodeCount,
       masterSize:
-        this.state.cloudSrvc === "Azure" ? this.state.masterSize : undefined,
+        this.state.cloudSrvc === "AzureNative" ? this.state.masterSize : undefined,
       nodeSize: this.state.nodeSize,
       clusterName: this.state.clusterName,
       imageName: this.state.imageName,
@@ -240,7 +239,7 @@ class CreateCluster extends Component {
                         />
                       </div>
                     </div>
-                    {this.state.cloudSrvc === "Azure" ? (
+                    {this.state.cloudSrvc === "AzureNative" ? (
                       <div className="form-group">
                         <label className="col-md-12 required">
                           Number of Master Nodes
@@ -260,7 +259,7 @@ class CreateCluster extends Component {
                         </div>
                       </div>
                     ) : null}
-                    {this.state.cloudSrvc === "Azure" ? (
+                    {this.state.cloudSrvc === "AzureNative" ? (
                       <DropDown
                         data={this.state.lookupData.masterInstTypes}
                         value={this.state.masterSize}
@@ -335,6 +334,7 @@ class CreateCluster extends Component {
                       value={this.state.credentials}
                       onChange={this.handleOnChange}
                       mandatory={this.state.credentialsMissing}
+                      required={true}
                     />
 
                     <div className="form-group float-left">
