@@ -198,20 +198,24 @@ class Security extends Component {
           onChange={this.handleOnChange}
           value={this.state.credentialData[component.value]}
           required={true}
-          isPassword={this.state[component.value+"Hidden"] === undefined ? true
-            : !this.state[component.value+"Hidden"]}
+          isPassword={
+            this.state[component.value + "Hidden"] === undefined
+              ? true
+              : !this.state[component.value + "Hidden"]
+          }
           showEyeIcon={true}
           eyeIcon={
             <i
-              id={[component.value]+"Hidden"}
+              id={[component.value] + "Hidden"}
               className={classNames(
                 "eye fa",
-                this.state[component.value+"Hidden"]
-                  ? "fa-eye-slash"
-                  : "fa-eye"
+                this.state[component.value + "Hidden"]
+                  ? "fa-eye"
+                  : "fa-eye-slash"
               )}
               onClick={this.handleEyeToggle}
-              ></i>}
+            ></i>
+          }
         />
       );
     });
