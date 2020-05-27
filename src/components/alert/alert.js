@@ -1,13 +1,17 @@
 import swal from "sweetalert";
-class alert {
-  confirmationBox = (title, callback) => {
-    swal({
-      title: title,
-      buttons: true,
-    }).then((value) => {
-      console.log("valuee---", value);
-      callback();
-    });
-  };
+export function confirmationBox(title, callback) {
+  swal({
+    title: title,
+    buttons: true,
+  }).then((value) => {
+    callback && callback();
+  });
 }
-export default alert;
+
+export function alertBox(title, callback) {
+  swal({
+    title: title,
+  }).then((value) => {
+    callback && callback();
+  });
+}

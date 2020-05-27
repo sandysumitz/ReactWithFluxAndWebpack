@@ -1,19 +1,19 @@
 import React, { Component, createFactory } from "react";
 import DashboardActionCreator from "../../actionCreator/DashboardActionCreator";
+import { confirmationBox, alertBox } from "../alert/alert";
 // import swal from "sweetalert";
 
 class Dashboard extends Component {
   componentDidMount() {}
-  handleClick = () => {
-    // swal({
-    //   title: "Are you sure?",
-    //   buttons: true,
-    // }).then((value) => {
-    //   console.log("valuee---", value);
-    // });
-  };
+
   callbackMethod = () => {
     console.log("callbackMethod---");
+  };
+  handleClick = () => {
+    // swal({
+    //   title: "Deleted Successfully",
+    // });
+    // alertBox("hiiii");
   };
   render() {
     return (

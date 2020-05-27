@@ -11,6 +11,7 @@ import Loader from "../loader/Loader";
 
 import EventType from "../../constants/eventType";
 import messages from "../../messges.json";
+import swal from "sweetalert";
 
 import classNames from "classnames";
 
@@ -53,6 +54,9 @@ class Security extends Component {
   };
 
   credentialsDeleted = () => {
+    swal({
+      title: "Deleted Successfully",
+    });
     this.setState({
       renderedOn: Date.now,
     });
@@ -231,11 +235,19 @@ class Security extends Component {
   handleDeleteCredential = (event) => {
     event.preventDefault();
     console.log("event.target.id---", event.target.id);
-    const payLoad = {
-      credentialName: event.target.id,
-      userID: "ik8smpuser",
-    };
-    SecurityActionCreator.deleteCredential(payLoad);
+    swal({
+      title: "Are you sure?",
+      buttons: true,
+    }).then((value) => {
+      console.log("valuee---", value);
+      if (value) {
+        const payLoad = {
+          credentialName: event.target.id,
+          userID: "ik8smpuser",
+        };
+        SecurityActionCreator.deleteCredential(payLoad);
+      }
+    });
   };
   handleSubmit = (event) => {
     event.preventDefault();
