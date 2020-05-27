@@ -195,7 +195,7 @@ class CreateCluster extends Component {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-block">
-                <h4 className="card-title">Cluster Management</h4>
+                <h3 className="card-title">Cluster Management</h3>
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
                     <div className="form-group">
