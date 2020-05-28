@@ -8,34 +8,6 @@ class SecurityStore extends EventEmitter {
   constructor() {
     super();
     Dispatcher.register(this.registerToActions);
-    // this.lookupOptionData = {
-    //   credComponentsList: [
-    //     {
-    //       credentialType: "AzureServicePrinciple",
-    //       components: [
-    //         {
-    //           name: "subscriptionId",
-    //           value: "Subscription ID",
-    //           isRequired: true
-    //         },
-    //         { name: "clientId", value: "Client ID", isRequired: true },
-    //         { name: "tenant", value: "Tenant", isRequired:true },
-    //         { name: "secret", value: "Secret", isRequired: false },
-    //       ],
-    //     },
-    //     {
-    //       credentialType: "awsCredntial",
-    //       components: [
-    //         {
-    //           name: "accessKey",
-    //           value: "Access Key",
-    //           isRequired: true
-    //         },
-    //         { name: "scretKey", value: "Secret Key", isRequired: false },
-    //       ],
-    //     },
-    //   ],
-    // };
   }
 
   registerToActions = (action) => {

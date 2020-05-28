@@ -39,6 +39,9 @@ class Security extends Component {
       clusterName: "",
       message: messages.SECURITY.SECURITY_CREATED,
     });
+
+    // Rerender the credential list with latest data
+    SecurityActionCreator.getCredentialList({ userID: "ik8smpuser" });
   };
 
   securityAddingFailed = () => {
@@ -268,8 +271,9 @@ class Security extends Component {
     });
     //TODO PARAMETER
     SecurityActionCreator.createSecurity({
-      userId: "ik8smpuser", //TODO - Lgged in user id, correct after development of login
-      name: this.state.credentialData.credentialName,
+      userID: "ik8smpuser", //TODO - Lgged in user id, correct after development of login
+      credentialType: this.state.selectedCredential,
+      credentialName: this.state.credentialData.credentialName,
       azurePrincipal: selectedComponentItems,
     });
   };
