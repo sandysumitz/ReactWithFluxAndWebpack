@@ -154,7 +154,7 @@ class CreateCluster extends Component {
         nodeCountMissing: !nodeCount,
         cloudSrvcMissing: !cloudSrvc,
         clusterNameMissing: !clusterName,
-        credentialsMissing: !credentials
+        credentialsMissing: !credentials,
       });
       return false;
     }
@@ -162,10 +162,14 @@ class CreateCluster extends Component {
     const requestParams = {
       cloudSrvc: this.state.cloudSrvc,
       masterCount:
-        this.state.cloudSrvc === "AzureNative" ? this.state.masterCount : undefined,
+        this.state.cloudSrvc === "AzureNative"
+          ? this.state.masterCount
+          : undefined,
       nodeCount: this.state.nodeCount,
       masterSize:
-        this.state.cloudSrvc === "AzureNative" ? this.state.masterSize : undefined,
+        this.state.cloudSrvc === "AzureNative"
+          ? this.state.masterSize
+          : undefined,
       nodeSize: this.state.nodeSize,
       clusterName: this.state.clusterName,
       imageName: this.state.imageName ? this.state.imageName : "Ubuntu",
