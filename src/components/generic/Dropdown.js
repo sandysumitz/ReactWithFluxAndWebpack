@@ -7,7 +7,7 @@ class Dropdown extends Component {
   }
   generateOptions = () => {
     const { data } = this.props;
-    if (!data) {
+    if (!data || data.length === 0) {
       return null;
     }
     const options = data.options.map((option, i) => {

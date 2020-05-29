@@ -10353,3 +10353,7 @@ pre {
 .swal-title {
   font-size: 19px;
 }
+
+.underline {
+  text-decoration: underline;
+}

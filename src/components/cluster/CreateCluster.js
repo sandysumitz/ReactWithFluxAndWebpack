@@ -199,7 +199,14 @@ class CreateCluster extends Component {
           <div className="col-lg-12">
             <div className="card">
               <div className="card-block">
-                <h3 className="card-title">Cluster Management</h3>
+                <h3 className="card-title">Create Cluster</h3>
+                <button
+                  id={"backToStatus"}
+                  onClick={this.props.onClick}
+                  className="btn pull-right btn-danger"
+                >
+                  Back To Status
+                </button>
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
                     <div className="form-group">

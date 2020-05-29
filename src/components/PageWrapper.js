@@ -1,5 +1,6 @@
 import React, { Component, createFactory } from "react";
 import CreateCluster from "./cluster/CreateCluster";
+import ClusterWrapper from "./cluster/ClusterWrapper";
 import Security from "./security/SecurityNew";
 import UnderConstruction from "./UnderConstruction";
 import DashBoard from "./dashboard/Dashboard";
@@ -31,7 +32,7 @@ class PageWrapper extends Component {
         component = <DashBoard />;
         break;
       case Menu.CLUSTER_MANAGEMENT:
-        component = <CreateCluster />;
+        component = <ClusterWrapper />;
         break;
       case Menu.SECURITY:
         component = <Security />;
