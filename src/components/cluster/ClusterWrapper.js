@@ -49,16 +49,22 @@ class ClusterWrapper extends Component {
       iFrameUrl: event.target.dataset.url,
     });
   };
+  iframeLoaded = () => {
+    console.log("iframeLoaded----");
+    var iFrameID = document.getElementById("idIframe");
+    if (iFrameID) {
+      iFrameID.height = "";
+      iFrameID.height =
+        iFrameID.contentWindow.document.body.scrollHeight + "px";
+      iFrameID.width = "";
+      iFrameID.width = iFrameID.contentWindow.document.body.scrollWidth + "px";
+    }
+  };
   getIframe = () => {
     const { iFrameUrl } = this.state;
     const ifrm =
-      "<iframe height='500px' style='width: 100%;' scrolling='no' title='fx.' src='//" +
-      iFrameUrl +
-      "?height=265&theme-id=0&default-tab=js,result' frameborder='no' allowtransparency='true' allowfullscreen='true'>Dashboard</iframe>";
-    if (window.k8sDashboardUrl) {
-      window.k8sDashboardUrl = null;
-      return <Iframe iframe={ifrm} />;
-    }
+      "<iframe id='idIframe' onload='iframeLoaded()' height='100%' style='width: 500%;' scrolling='no' title='fx.' src='https://40.121.45.23/' frameborder='no' allowtransparency='true' allowfullscreen='true'>Dashboard</iframe>";
+
     return <div dangerouslySetInnerHTML={{ __html: ifrm }} />;
   };
   getFilteredData = () => {
