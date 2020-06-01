@@ -9,7 +9,7 @@ class Loader extends Component {
     return (
       <div
         className={classNames(
-          !this.props.position ? "loaderWithPosFixed" : "loaderWithoutPosFixed"
+          !this.props.position ? "loaderWithPosFixed" : "loaderWithoutPos"
         )}
       >
         <img

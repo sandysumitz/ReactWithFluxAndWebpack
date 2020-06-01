@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Iframe from "react-iframe";
 import classNames from "classnames";
 
 import DropDown from "../generic/Dropdown";
@@ -11,6 +12,9 @@ import EventType from "../../constants/eventType";
 import messages from "../../messges.json";
 import ClusterStatus from "./ClusterStatus";
 import CreateCluster from "./CreateCluster";
+import K8DashBoard from "./K8DashBoard";
+import config from "../../../config.json";
+import url from "../../../url.json";
 
 class ClusterWrapper extends Component {
   constructor(props) {
@@ -23,9 +27,7 @@ class ClusterWrapper extends Component {
       searchValue: "",
       loading: true,
     };
-    this.eventSource = new EventSource(
-      "http://104.211.206.68:8080/api/v1/clusterStatus"
-    );
+    this.eventSource = new EventSource(config.API_URL + url.GET_CLUSTER_STATUS);
   }
 
   getInitialState = () => {
@@ -33,8 +35,10 @@ class ClusterWrapper extends Component {
   };
 
   handleToggle = () => {
+    console.log("handleToggle---");
     this.setState({
       isStatus: !this.state.isStatus,
+      isIframe: false,
     });
   };
   handleOnChange = (event) => {
@@ -46,6 +50,7 @@ class ClusterWrapper extends Component {
     console.log(event.target.dataset.url);
     this.setState({
       isIframe: true,
+      isStatus: false,
       iFrameUrl: event.target.dataset.url,
     });
   };
@@ -62,10 +67,7 @@ class ClusterWrapper extends Component {
   };
   getIframe = () => {
     const { iFrameUrl } = this.state;
-    const ifrm =
-      "<iframe id='idIframe' height='100%' style='width: 500%;' scrolling='no' title='fx.' src='https://40.121.45.23/' frameborder='no' allowtransparency='true' allowfullscreen='true'>Dashboard</iframe>";
-
-    return <div dangerouslySetInnerHTML={{ __html: ifrm }} />;
+    return <K8DashBoard url={iFrameUrl} onClick={this.handleToggle} />;
   };
   getFilteredData = () => {
     const { data, searchValue } = this.state;
