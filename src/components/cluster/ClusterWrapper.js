@@ -77,11 +77,11 @@ class ClusterWrapper extends Component {
             (item.createStatus &&
               item.createStatus
                 .toLowerCase()
-                .startsWith(searchValue.toLowerCase())) ||
+                .indexOf(searchValue.toLowerCase()) > -1) ||
             (item.clusterName &&
               item.clusterName
                 .toLowerCase()
-                .startsWith(searchValue.toLowerCase()))
+                .indexOf(searchValue.toLowerCase()) > -1)
           );
         })
       : [];

@@ -34,6 +34,7 @@ class ClusterStatus extends Component {
       );
       let status = (
         <img
+          height="25px"
           title={value.createStatus}
           src="../src/styles/images/inProgress.png"
           alt="inProgress"
@@ -43,6 +44,7 @@ class ClusterStatus extends Component {
         case "Ready":
           status = (
             <img
+              height="25px"
               title={value.createStatus}
               src="../src/styles/images/ready.png"
               alt="inProgress"
@@ -52,6 +54,7 @@ class ClusterStatus extends Component {
         case "InProgress":
           status = (
             <img
+              height="25px"
               title={value.createStatus}
               src="../src/styles/images/inProgress_1.png"
               alt="inProgress"
@@ -61,6 +64,7 @@ class ClusterStatus extends Component {
         case "Failure":
           status = (
             <img
+              height="25px"
               title={value.createStatus}
               src="../src/styles/images/failed.png"
               alt="inProgress"

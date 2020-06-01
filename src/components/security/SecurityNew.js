@@ -78,7 +78,6 @@ class Security extends Component {
 
   getCredentialList = () => {
     const credentialList = SecurityStore.credentialsList;
-    console.log("credentialList---", credentialList);
     return credentialList && credentialList.length > 0 ? (
       credentialList.map((credential) => {
         return (
@@ -237,15 +236,14 @@ class Security extends Component {
   };
   handleDeleteCredential = (event) => {
     event.preventDefault();
-    console.log("event.target.id---", event.target.id);
+    const credentialName = event.target.id;
     swal({
       title: "Are you sure?",
       buttons: true,
     }).then((value) => {
-      console.log("valuee---", value);
       if (value) {
         const payLoad = {
-          credentialName: event.target.id,
+          credentialName: credentialName,
           userID: "ik8smpuser",
         };
         SecurityActionCreator.deleteCredential(payLoad);
@@ -278,7 +276,6 @@ class Security extends Component {
     });
   };
   render() {
-    console.log("this.state---", this.state);
     if (this.state.loading) {
       return <Loader />;
     }
