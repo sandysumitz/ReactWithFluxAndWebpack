@@ -63,7 +63,7 @@ class ClusterWrapper extends Component {
   getIframe = () => {
     const { iFrameUrl } = this.state;
     const ifrm =
-      "<iframe id='idIframe' onload='iframeLoaded()' height='100%' style='width: 500%;' scrolling='no' title='fx.' src='https://40.121.45.23/' frameborder='no' allowtransparency='true' allowfullscreen='true'>Dashboard</iframe>";
+      "<iframe id='idIframe' height='100%' style='width: 500%;' scrolling='no' title='fx.' src='https://40.121.45.23/' frameborder='no' allowtransparency='true' allowfullscreen='true'>Dashboard</iframe>";
 
     return <div dangerouslySetInnerHTML={{ __html: ifrm }} />;
   };

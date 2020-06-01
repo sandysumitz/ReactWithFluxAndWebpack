@@ -32,10 +32,48 @@ class ClusterStatus extends Component {
       ) : (
         value.clusterName
       );
+      let status = (
+        <img
+          title={value.createStatus}
+          src="../src/styles/images/inProgress.png"
+          alt="inProgress"
+        ></img>
+      );
+      switch (value.createStatus) {
+        case "Ready":
+          status = (
+            <img
+              title={value.createStatus}
+              src="../src/styles/images/ready.png"
+              alt="inProgress"
+            ></img>
+          );
+          break;
+        case "InProgress":
+          status = (
+            <img
+              title={value.createStatus}
+              src="../src/styles/images/inProgress_1.png"
+              alt="inProgress"
+            ></img>
+          );
+          break;
+        case "Failure":
+          status = (
+            <img
+              title={value.createStatus}
+              src="../src/styles/images/failed.png"
+              alt="inProgress"
+            ></img>
+          );
+          break;
+        default:
+          break;
+      }
       return (
         <tr key={index}>
           <td>{link}</td>
-          <td>{value.createStatus}</td>
+          <td>{status}</td>
           <td>{value.deployments}</td>
           <td>{value.utilization}</td>
           <td>{value.alerts}</td>
