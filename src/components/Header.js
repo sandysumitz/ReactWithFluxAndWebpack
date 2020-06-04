@@ -1,6 +1,14 @@
 import React, { Component } from "react";
 
 class Header extends Component {
+  constructor(props) {
+    super(props);
+  }
+  handleToggelMenu = () => {
+    if (this.props.onClick) {
+      this.props.onClick();
+    }
+  };
   render() {
     return (
       <header className="topbar is_stuck">
@@ -11,7 +19,7 @@ class Header extends Component {
                 <img
                   height="25px"
                   width="25px"
-                  src="../src/styles/images/kubernetes_1.png"
+                  src="./styles/images/kubernetes_1.png"
                   alt="homepage"
                   className="light-logo"
                 />
@@ -21,7 +29,11 @@ class Header extends Component {
           <div className="navbar-collapse">
             <ul className="navbar-nav mr-auto mt-md-0">
               <li className="nav-item">
-                <a className="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark">
+                <a
+                  onClick={this.handleToggelMenu}
+                  title="Toggel Menu"
+                  className="nav-link nav-toggler text-muted waves-effect waves-dark"
+                >
                   <i className="mdi mdi-menu"></i>
                 </a>
               </li>
@@ -35,7 +47,7 @@ class Header extends Component {
                   aria-expanded="false"
                 >
                   <img
-                    src="../src/styles/images/users/profile.png"
+                    src="./styles/images/users/profile.png"
                     alt="user"
                     className="profile-pic m-r-10"
                   />

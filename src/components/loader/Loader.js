@@ -16,7 +16,7 @@ class Loader extends Component {
           className={classNames(
             !this.props.position ? "loaderBig" : "loaderSmall"
           )}
-          src="../src/styles/images/loader1.gif"
+          src="./styles/images/loader1.gif"
           alt="loader"
         />
       </div>

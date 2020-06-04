@@ -36,7 +36,7 @@ class ClusterStatus extends Component {
         <img
           height="25px"
           title={value.createStatus}
-          src="../src/styles/images/inProgress.png"
+          src="./styles/images/inProgress.png"
           alt="inProgress"
         ></img>
       );
@@ -46,7 +46,7 @@ class ClusterStatus extends Component {
             <img
               height="25px"
               title={value.createStatus}
-              src="../src/styles/images/ready.png"
+              src="./styles/images/ready.png"
               alt="inProgress"
             ></img>
           );
@@ -56,7 +56,7 @@ class ClusterStatus extends Component {
             <img
               height="25px"
               title={value.createStatus}
-              src="../src/styles/images/inProgress_1.png"
+              src="./styles/images/inProgress_1.png"
               alt="inProgress"
             ></img>
           );
@@ -66,7 +66,7 @@ class ClusterStatus extends Component {
             <img
               height="25px"
               title={value.createStatus}
-              src="../src/styles/images/failed.png"
+              src="./styles/images/failed.png"
               alt="inProgress"
             ></img>
           );

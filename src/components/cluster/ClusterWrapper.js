@@ -20,14 +20,14 @@ class ClusterWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      data: this.props.clusterData,
       isStatus: true,
       isIframe: false,
       iFrameUrl: null,
       searchValue: "",
       loading: true,
+      renderedOn: Date.now,
     };
-    this.eventSource = new EventSource(config.API_URL + url.GET_CLUSTER_STATUS);
   }
 
   getInitialState = () => {
@@ -48,29 +48,21 @@ class ClusterWrapper extends Component {
   };
   handleNavigate = (event) => {
     console.log(event.target.dataset.url);
+    ClusterActionCreator.loadIframe();
     this.setState({
       isIframe: true,
       isStatus: false,
       iFrameUrl: event.target.dataset.url,
     });
   };
-  iframeLoaded = () => {
-    console.log("iframeLoaded----");
-    var iFrameID = document.getElementById("idIframe");
-    if (iFrameID) {
-      iFrameID.height = "";
-      iFrameID.height =
-        iFrameID.contentWindow.document.body.scrollHeight + "px";
-      iFrameID.width = "";
-      iFrameID.width = iFrameID.contentWindow.document.body.scrollWidth + "px";
-    }
-  };
   getIframe = () => {
     const { iFrameUrl } = this.state;
     return <K8DashBoard url={iFrameUrl} onClick={this.handleToggle} />;
   };
   getFilteredData = () => {
-    const { data, searchValue } = this.state;
+    const { searchValue } = this.state;
+    console.log("this.props.clusterData---", this.props.clusterData);
+    const data = Object.assign([], this.props.clusterData);
     const filteredData = data
       ? data.filter((item) => {
           return (
@@ -88,37 +80,31 @@ class ClusterWrapper extends Component {
     console.log("filteredData---", filteredData);
     return filteredData;
   };
-  updateClusterStatus = (result) => {
-    const { data } = this.state;
-    const updatedData = Object.assign([], data);
-    const output =
-      updatedData &&
-      updatedData.find((item) => {
-        return item.clusterReqId === result.clusterReqId;
-      });
-    if (!output) {
-      updatedData.push(result);
-    } else {
-      let item = Object.assign({}, output);
-      item.clusterName = result.clusterName;
-      item.createStatus = result.createStatus;
-      item.createTime = result.createTime;
-      item.createUser = result.createUser;
-      item.id = result.id;
-      item.k8sDashboardUrl = result.k8sDashboardUrl;
-      item.clusterReqId = result.clusterReqId;
-      updatedData[result.clusterReqId] = item;
-    }
+  clusterUpdated = () => {
     this.setState({
-      data: Object.assign([], updatedData),
-      loading: false,
+      renderedOn: Date.now,
     });
   };
   componentDidMount() {
-    this.eventSource.onmessage = (e) =>
-      this.updateClusterStatus(JSON.parse(e.data));
+    ClusterStore.addEventListener(
+      EventType.UPDATE_CLUSTER_DATA,
+      this.clusterUpdated
+    );
   }
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    ClusterStore.removeEventListener(
+      EventType.UPDATE_CLUSTER_DATA,
+      this.clusterUpdated
+    );
+  }
+  static getDerivedStateFromProps(props, state) {
+    if (state.data !== props.clusterData) {
+      return {
+        data: props.clusterData,
+      };
+    }
+    return null;
+  }
 
   renderComponents = () => {
     const { isStatus, isIframe, searchValue, loading } = this.state;

@@ -10,8 +10,8 @@ import EventType from "../constants/eventType";
 import Menu from "../constants/menu";
 
 class PageWrapper extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
   componentDidMount() {
     MenuStore.addEventListener(EventType.MENU_SELECTED, this.menuSeleted);
@@ -32,7 +32,7 @@ class PageWrapper extends Component {
         component = <DashBoard />;
         break;
       case Menu.CLUSTER_MANAGEMENT:
-        component = <ClusterWrapper />;
+        component = <ClusterWrapper clusterData={this.props.clusterData} />;
         break;
       case Menu.SECURITY:
         component = <Security />;

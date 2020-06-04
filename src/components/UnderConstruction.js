@@ -2,11 +2,10 @@ import React, { Component, createFactory } from "react";
 import DashboardActionCreator from "../actionCreator/DashboardActionCreator";
 
 class UnderConstruction extends Component {
-
   componentDidMount() {
     DashboardActionCreator.loadOptionsData();
   }
-  
+
   render() {
     return (
       <div className="container-fluid">
@@ -20,7 +19,7 @@ class UnderConstruction extends Component {
             <div className="card">
               <div className="card-block">
                 <img
-                  src="../src/styles/images/UnderConstruction_xlarge.jpg"
+                  src="./styles/images/UnderConstruction_xlarge.jpg"
                   alt="under construction"
                 ></img>
               </div>

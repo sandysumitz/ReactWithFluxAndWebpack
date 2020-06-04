@@ -29,7 +29,7 @@ class Dashboard extends Component {
               <div className="card-block">
                 <img
                   onClick={this.handleClick}
-                  src="../src/styles/images/UnderConstruction_xlarge.jpg"
+                  src="./styles/images/UnderConstruction_xlarge.jpg"
                   alt="under construction"
                 ></img>
               </div>

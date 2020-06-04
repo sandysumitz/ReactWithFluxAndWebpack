@@ -91,6 +91,12 @@ class DashBoardStore extends EventEmitter {
         });
         options = _filter6["credentialType"];
         break;
+      case "Region":
+        const _filter7 = optionsData.find((option) => {
+          return Object.keys(option)[0] === "availZone";
+        });
+        options = _filter7["availZone"];
+        break;
     }
 
     return {

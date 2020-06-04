@@ -25,20 +25,17 @@ class Security extends Component {
   getInitialState = () => {
     return {
       message: "",
-      credentialName: "",
       selectedCredential: "",
-      credentialList: [],
       credentialData: null,
       renderedOn: Date.now,
     };
   };
 
-  securityAdded = (clusterID) => {
-    this.setState({
-      nodeCount: "",
-      clusterName: "",
-      message: messages.SECURITY.SECURITY_CREATED,
-    });
+  securityAdded = () => {
+    console.log("securityAdded");
+    let initialState = this.getInitialState();
+    initialState.message = messages.SECURITY.SECURITY_CREATED;
+    this.setState(initialState);
 
     // Rerender the credential list with latest data
     SecurityActionCreator.getCredentialList({ userID: "ik8smpuser" });
@@ -156,7 +153,7 @@ class Security extends Component {
   handleOnChange = (event) => {
     let credentialData = Object.assign({}, this.state.credentialData);
     credentialData[event.target.id] = event.target.value;
-    this.setState({ credentialData: credentialData });
+    this.setState({ credentialData: credentialData, message: "" });
   };
   isInValid = () => {
     const { credentialData, selectedCredential } = this.state;

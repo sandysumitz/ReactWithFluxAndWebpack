@@ -27,31 +27,15 @@ class K8DashBoard extends Component {
     const { url, onClick } = this.props;
     const { loading } = this.state;
     return (
-      <div className="container-fluid">
+      <div className="container-fluid iframeWrapper">
         <div className="row page-titles">
           <div className="col-md-5 col-8 align-self-center">
             <h3 className="text-themecolor">Cluster Management</h3>
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-12">
-            <div className="card">
-              <div className="card-block">
-                <h4 className="card-title">Cluster Management</h4>
-                <button
-                  id={"backToStatus"}
-                  onClick={onClick}
-                  className="btn pull-right btn-danger"
-                >
-                  Back to Status
-                </button>
-                <div className="table-responsive">
-                  {loading ? <Loader /> : null}
-                  <Iframe url={url} onLoad={this.onIframeLoad} />;
-                </div>
-              </div>
-            </div>
-          </div>
+          {loading ? <Loader /> : null}
+          <Iframe url={url} onLoad={this.onIframeLoad} />;
         </div>
       </div>
     );

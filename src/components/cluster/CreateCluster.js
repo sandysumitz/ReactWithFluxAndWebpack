@@ -31,27 +31,29 @@ class CreateCluster extends Component {
       cloudSrvc: "AzureNative",
       masterCount: "1",
       nodeCount: "",
+      region: "",
       masterSize: "Standard_B2s",
       nodeSize: "Standard_B1ms",
       clusterName: "",
       credentials: "",
       imageName: "Ubuntu",
       kubeDashboard: "KubernetesDashboard",
-      loggingEnabled: "Y",
       monitoringEnabled: "N",
       cloudSrvcMissing: false,
       masterCountMissing: false,
       clusterNameMissing: false,
       credentialsMissing: false,
+      regionMissing: false,
     };
   };
 
   clusterAdded = (clusterID) => {
-    this.setState({
-      nodeCount: "",
-      clusterName: "",
-      message: messages.CLUSTER.CLUSTER_CREATED + " : " + clusterID,
-    });
+    let initialState = this.getInitialState();
+    initialState.message = messages.CLUSTER.CLUSTER_CREATED.replace(
+      "<cluster id>",
+      clusterID
+    );
+    this.setState(initialState);
   };
 
   loadLookupOptionsData = () => {
@@ -65,11 +67,15 @@ class CreateCluster extends Component {
       "nodeSize"
     );
     const imageName = DashboardStore.getDropdownData("Image Name", "imageName");
-    const dashboard = DashboardStore.getDropdownData("Dashboard", "dashboard");
+    const dashboard = DashboardStore.getDropdownData(
+      "Dashboard",
+      "kubeDashboard"
+    );
     const credentials = DashboardStore.getDropdownData(
       "Credentials",
       "credentials"
     );
+    const region = DashboardStore.getDropdownData("Region", "region");
 
     const lookupData = {
       provider,
@@ -78,6 +84,7 @@ class CreateCluster extends Component {
       imageName,
       dashboard,
       credentials,
+      region,
     };
 
     this.setState({
@@ -146,7 +153,13 @@ class CreateCluster extends Component {
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    const { nodeCount, clusterName, cloudSrvc, credentials } = this.state;
+    const {
+      nodeCount,
+      clusterName,
+      cloudSrvc,
+      credentials,
+      region,
+    } = this.state;
 
     if (!nodeCount || !clusterName || !cloudSrvc || !credentials) {
       this.setState({
@@ -155,6 +168,7 @@ class CreateCluster extends Component {
         cloudSrvcMissing: !cloudSrvc,
         clusterNameMissing: !clusterName,
         credentialsMissing: !credentials,
+        regionMissing: !region,
       });
       return false;
     }
@@ -174,9 +188,9 @@ class CreateCluster extends Component {
       clusterName: this.state.clusterName,
       imageName: this.state.imageName ? this.state.imageName : "Ubuntu",
       kubeDashboard: this.state.kubeDashboard,
-      loggingEnabled: this.state.loggingEnabled,
       monitoringEnabled: this.state.monitoringEnabled,
       credentialName: this.state.credentials,
+      availZone: this.state.region,
     };
     Object.keys(requestParams).map(
       (key) => requestParams[key] === undefined && delete requestParams[key]
@@ -250,6 +264,13 @@ class CreateCluster extends Component {
                         />
                       </div>
                     </div>
+                    <DropDown
+                      data={this.state.lookupData.region}
+                      value={this.state.region}
+                      onChange={this.handleOnChange}
+                      mandatory={this.state.regionMissing}
+                      required={true}
+                    />
                     {this.state.cloudSrvc === "AzureNative" ? (
                       <div className="form-group">
                         <label className="col-md-12 required">
@@ -292,30 +313,6 @@ class CreateCluster extends Component {
                       value={this.state.kubeDashboard}
                       onChange={this.handleOnChange}
                     />
-                    <div className="form-group">
-                      <label className="col-sm-12">Enable Logging</label>
-                      <div className="col-sm-12">
-                        <input
-                          type="radio"
-                          name="loggingEnabled"
-                          id="log_yes"
-                          value={"Y"}
-                          defaultChecked
-                          onChange={this.handleOnChange}
-                        />
-                        <label htmlFor="log_yes">Yes</label>
-                      </div>
-                      <div className="col-sm-12">
-                        <input
-                          type="radio"
-                          name="loggingEnabled"
-                          id="log_no"
-                          value={"N"}
-                          onChange={this.handleOnChange}
-                        />
-                        <label htmlFor="log_no">No</label>
-                      </div>
-                    </div>
                     <div className="form-group">
                       <label className="col-sm-12">Enable Monitoring</label>
                       <div className="col-sm-12">
