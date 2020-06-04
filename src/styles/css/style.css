@@ -8929,12 +8929,12 @@ form p:last-child {
 }
 
 /* Remove default checkbox */
-[type="checkbox"]:not(:checked),
+/* [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked {
   position: absolute;
   left: 0px;
   opacity: 1;
-}
+} */
 
 [type="checkbox"] {
   /* checkbox aspect */
@@ -9358,12 +9358,12 @@ pre {
   font-weight: normal;
 }
 
-[type="checkbox"]:checked+label:before {
+/* [type="checkbox"]:checked+label:before {
   top: -4px;
   left: -2px;
   width: 11px;
   height: 19px;
-}
+} */
 
 [type="checkbox"]:checked.chk-col-red+label:before {
   border-right: 2px solid #fb3a3a;
@@ -10366,6 +10366,11 @@ pre {
   height: 500px;
 }					
 
+.input-checkbox{
+  margin-right: 5px;
+  height: 20px;
+  width: 25px;
+}
 /* Customize the label (the container) */
 .checkbox-container {
   display: block;

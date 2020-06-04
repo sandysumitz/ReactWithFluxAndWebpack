@@ -15,12 +15,13 @@ class CreateNameSpace extends Component {
 
   constructor(props) {
     super(props);
-    this.state = this.getInitialState();
+    this.state = this.getInitialStatessss();    
     this.state.loading = false;
     this.index = 0;
+    this.handleNetworkConfigurationChecked = this.handleNetworkConfigurationChecked.bind(this);
   }
 
-  getInitialState = () => {
+  getInitialStatessss = () => {
     return {
       renderNetworkConfigurationParametes: [],
       isNetworkConfigurationChecked: false,
@@ -165,8 +166,7 @@ class CreateNameSpace extends Component {
     }
   }
 
-  handleNetworkConfigurationChecked = (event) => {
-    event.preventDefault();
+  handleNetworkConfigurationChecked(event) {
     let toRender = [];
     let parameters = null;
 
@@ -177,7 +177,7 @@ class CreateNameSpace extends Component {
       toRender.push(policy);
     } 
     this.setState({
-      isNetworkConfigurationChecked: !this.state.isNetworkConfigurationChecked,
+      isNetworkConfigurationChecked: event.target.checked,
       renderNetworkConfigurationParametes: toRender,
       networkConfigurationParameters: parameters
     });
@@ -224,20 +224,13 @@ class CreateNameSpace extends Component {
                     <div className="form-group">
                             <label
                       className={classNames("col-sm-12")}>
-                         {/* checkbox-container")}> */}
-                      {/* this.state.isNetworkConfigurationChecked ? "checked": "")}> */}
                       <input 
-                        // {classNames("col-sm-12", 
-                        // this.state.isNetworkConfigurationChecked ? "checked": "")}
-                        id="networkConfiguration"
+                        className="input-checkbox"
                         type="checkbox"
-                        // checked={this.state.isNetworkConfigurationChecked}
-                        onClick={this.handleNetworkConfigurationChecked}
+                        onChange={(event) => this.handleNetworkConfigurationChecked(event)}
                         >
                       </input>
                       Network Configuration
-                      {/* <span className={classNames("checkmark",
-                      this.state.isNetworkConfigurationChecked ? "checked": "unchecked")}></span> */}
                     </label>      
                     </div>
                     {this.state.isNetworkConfigurationChecked ? (
