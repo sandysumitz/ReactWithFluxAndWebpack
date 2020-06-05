@@ -6793,7 +6793,7 @@ Main sidebar
 ******************/
 .left-sidebar {
   position: absolute;
-  width: 240px;
+  width: 250px;
   height: 100%;
   top: 0px;
   z-index: 20;
@@ -8520,7 +8520,7 @@ When click on sidebar toggler and also for tablet
  ============================================================== */
 @media (min-width: 768px) {
   .navbar-header {
-    width: 240px;
+    width: 250px;
     -webkit-flex-shrink: 0;
     -ms-flex-negative: 0;
     flex-shrink: 0;
@@ -10392,4 +10392,9 @@ pre {
 
 .iframeWrapper .row {
   margin: 0px;
+}
+
+.bin {
+  margin-left: 25%;
+  cursor: pointer;
 }

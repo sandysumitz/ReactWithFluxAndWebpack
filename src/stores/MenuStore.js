@@ -11,13 +11,8 @@ class MenuStore extends EventEmitter {
     this.items = [
       {
         id: 1,
-        name: Menu.DASHBOARD,
-        isActive: true,
-      },
-      {
-        id: 2,
         name: Menu.CLUSTER_MANAGEMENT,
-        isActive: false,
+        isActive: true,
       },
       {
         id: 3,

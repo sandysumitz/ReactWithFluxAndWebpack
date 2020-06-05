@@ -73,6 +73,21 @@ class Security extends Component {
     });
   };
 
+  getCredentialTypeDisplayName = (credentialType) => {
+    let credType = credentialType;
+    switch (credentialType) {
+      case "azureServicePrincipal":
+        credType = "Azure Service Principal";
+        break;
+      case "awsCredential":
+        credType = "AWS Credentials";
+        break;
+      default:
+        break;
+    }
+    return credType;
+  };
+
   getCredentialList = () => {
     const credentialList = SecurityStore.credentialsList;
     return credentialList && credentialList.length > 0 ? (
@@ -80,15 +95,17 @@ class Security extends Component {
         return (
           <tr key={credential.credentialName}>
             <td>{credential.credentialName}</td>
-            <td>{credential.credentialType}</td>
             <td>
-              <button
-                id={credential.credentialName}
-                onClick={this.handleDeleteCredential}
-                className="btn btn-danger"
-              >
-                Delete
-              </button>
+              {this.getCredentialTypeDisplayName(credential.credentialType)}
+            </td>
+            <td>
+              <a title="Delete" className="bin" aria-expanded="false">
+                <i
+                  id={credential.credentialName}
+                  onClick={this.handleDeleteCredential}
+                  class="mdi mdi-delete"
+                ></i>
+              </a>
             </td>
           </tr>
         );

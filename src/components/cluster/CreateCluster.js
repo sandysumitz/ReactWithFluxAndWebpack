@@ -28,7 +28,7 @@ class CreateCluster extends Component {
   getInitialState = () => {
     return {
       message: "",
-      cloudSrvc: "AzureNative",
+      cloudSrvc: "AKS",
       masterCount: "1",
       nodeCount: "",
       region: "",
@@ -244,6 +244,13 @@ class CreateCluster extends Component {
                       value={this.state.cloudSrvc}
                       onChange={this.handleOnProviderChange}
                       mandatory={this.state.cloudSrvcMissing}
+                      required={true}
+                    />
+                    <DropDown
+                      data={this.state.lookupData.credentials}
+                      value={this.state.credentials}
+                      onChange={this.handleOnChange}
+                      mandatory={this.state.credentialsMissing}
                       required={true}
                     />
                     <div className="form-group">
