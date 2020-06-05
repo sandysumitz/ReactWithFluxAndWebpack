@@ -5,24 +5,29 @@ import TextBox from "../generic/TextBox";
 import ClusterStore from "../../stores/ClusterStore";
 import DashboardStore from "../../stores/DashBoardStore";
 import ClusterActionCreator from "../../actionCreator/ClusterActionCreator";
+import DropDown from "../generic/Dropdown";
 
 import EventType from "../../constants/eventType";
 import messages from "../../messges.json";
 
 class CreateNameSpace extends Component {
+
   constructor(props) {
     super(props);
-    this.state = this.getInitialState();
+    this.state = this.getInitialState();    
     this.state.loading = false;
+    this.index = 0;
+    this.handleNetworkConfigurationChecked = this.handleNetworkConfigurationChecked.bind(this);
   }
 
   getInitialState = () => {
     return {
+      renderNetworkConfigurationParametes: [],
+      isNetworkConfigurationChecked: false,
       message: "",
       namespaceName: "",
       clusterName: "",
-      applicationLabelName: "",
-      applicationPort: "",
+      networkConfigurationParameters: null,
       minReqMem: "",
       maxReqMem: "",
       minReqCPU: "",
@@ -54,40 +59,127 @@ class CreateNameSpace extends Component {
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    // const { nodeCount, clusterName, cloudSrvc, credentialName } = this.state;
-
-    // if (!nodeCount || !clusterName || !cloudSrvc) {
-    //   // || !credentialName) { TODO - correct when lookupoption api return the value
-    //   this.setState({
-    //     message: messages.CLUSTER.FIELD_MISSING,
-    //     nodeCountMissing: !nodeCount,
-    //     cloudSrvcMissing: !cloudSrvc,
-    //     clusterNameMissing: !clusterName,
-    //     // credentialsMissing: !credentialName -- TODO: waiting for api correction
-    //   });
-    //   return false;
-    // }
-
-    // const requestParams = {
-    //   cloudSrvc: this.state.cloudSrvc,
-    //   masterCount:
-    //     this.state.cloudSrvc === "Azure" ? this.state.masterCount : undefined,
-    //   nodeCount: this.state.nodeCount,
-    //   masterSize:
-    //     this.state.cloudSrvc === "Azure" ? this.state.masterSize : undefined,
-    //   nodeSize: this.state.nodeSize,
-    //   clusterName: this.state.clusterName,
-    //   imageName: this.state.imageName,
-    //   kubeDashboard: this.state.kubeDashboard,
-    //   loggingEnabled: this.state.loggingEnabled,
-    //   monitoringEnabled: this.state.monitoringEnabled,
-    //   credentialName: this.state.credentials,
-    // };
-    // Object.keys(requestParams).map(
-    //   (key) => requestParams[key] === undefined && delete requestParams[key]
-    // );
-    // ClusterActionCreator.createCluster(requestParams);
   };
+
+  handleNetworkConfigurationParameterOnChange = (event) => {
+    let configurationParameter = Object.assign({}, this.state.networkConfigurationParameters);
+    if(event && event.target){
+    let selectedRowId = event.target.parentElement.parentElement.parentElement.parentElement.id
+    selectedRowId = selectedRowId.substring(3);
+
+    let selectedTargetId = event.target.id;
+    let selectedParameter = selectedTargetId.substring(0, selectedTargetId.length-1);
+
+    let selectdNetworkConfiguration = configurationParameter[selectedRowId];
+
+    if(selectdNetworkConfiguration){
+    selectdNetworkConfiguration.applicationLabel = 
+      selectedParameter == "applicationLabel" ? event.target.value : selectdNetworkConfiguration.applicationLabel;
+
+    selectdNetworkConfiguration.applicationPort = 
+      selectedParameter == "applicationPort" ? event.target.value : selectdNetworkConfiguration.applicationPort;
+    } else{
+    configurationParameter[selectedRowId] = {
+      applicationLabel: (selectedParameter == "applicationLabel" ? event.target.value : ""),
+      applicationPort: (selectedParameter == "applicationPort" ? event.target.value : "")
+    };
+    }
+
+    this.setState({ networkConfigurationParameters: configurationParameter });
+  }
+  }
+
+  getNetworkConfigurationParameters = () => {
+    
+    let policy = (
+      <tr 
+        id={"row"+this.index}
+        className={classNames(this.index % 2 == 0 ? "even-row" : "odd-row")}>
+        <th>
+          <TextBox
+            id={"applicationLabel"+this.index}
+            labelName={"Application Label Name"}
+            onChange={this.handleNetworkConfigurationParameterOnChange}
+            value={this.state.applicationLabelName}
+            required={true}
+          />
+        </th>
+        <th>
+          <TextBox
+            id={"applicationPort"+this.index}
+            labelName={"Application Port"}
+            onChange={this.handleNetworkConfigurationParameterOnChange}
+            value={this.state.applicationPort}
+            required={true}
+          />
+        </th>
+        <th>
+        <input 
+          className="bin-icon"
+          type="image" 
+          src={"./styles/images/bin-icon.png"} 
+          alt="Submit"
+          onClick={this.deleteNetworkConfigurationParametes} />
+        </th>
+      </tr>
+); this.index++;
+ return policy;
+  }
+
+  addNetworkConfigurationParametes = (event) => {
+    event.preventDefault();
+    
+    let toRender = [...this.state.renderNetworkConfigurationParametes];
+    let policy = this.getNetworkConfigurationParameters();
+    let configurationParameter = Object.assign({}, this.state.networkConfigurationParameters);
+
+    toRender.push(policy);
+
+    this.setState({
+      renderNetworkConfigurationParametes: toRender,
+      networkConfigurationParameters: (this.state.networkConfigurationParameters ? 
+        configurationParameter : null)
+    });
+  }
+
+  deleteNetworkConfigurationParametes = (event) => {
+    event.preventDefault();
+
+    if(this.state.renderNetworkConfigurationParametes.length > 0){
+      let selectedRowId = event.target.parentElement.parentElement.id.substring(3);
+
+      let toRender = [...this.state.renderNetworkConfigurationParametes];
+      let parameters = null;
+      
+      delete toRender[selectedRowId];
+      if(this.state.networkConfigurationParameters) {
+        parameters = Object.assign({}, this.state.networkConfigurationParameters);
+        delete parameters[selectedRowId];
+      }
+
+      this.setState({
+        renderNetworkConfigurationParametes: toRender,
+        networkConfigurationParameters: parameters,
+      });
+    }
+  }
+
+  handleNetworkConfigurationChecked(event) {
+    let toRender = [];
+    let parameters = null;
+
+    if(!this.state.isNetworkConfigurationChecked) {
+      toRender = [...this.state.renderNetworkConfigurationParametes];
+      let policy = this.getNetworkConfigurationParameters();
+      parameters = Object.assign({}, this.state.networkConfigurationParameters);
+      toRender.push(policy);
+    } 
+    this.setState({
+      isNetworkConfigurationChecked: event.target.checked,
+      renderNetworkConfigurationParametes: toRender,
+      networkConfigurationParameters: parameters
+    });
+  }
 
   render() {
     if (this.state.loading) {
@@ -108,13 +200,6 @@ class CreateNameSpace extends Component {
                 <div className="table-responsive">
                   <form className="form-horizontal form-material">
                     <TextBox
-                      id={"namespaceName"}
-                      labelName={"Namespace Name"}
-                      onChange={this.handleOnChange}
-                      value={this.state.namespaceName}
-                      required={true}
-                    />
-                    <TextBox
                       id={"clusterName"}
                       labelName={"Cluster Name"}
                       onChange={this.handleOnChange}
@@ -122,20 +207,47 @@ class CreateNameSpace extends Component {
                       required={true}
                     />
                     <TextBox
-                      id={"applicationLabelName"}
-                      labelName={"Application Label Name"}
+                      id={"namespaceName"}
+                      labelName={"Namespace Name"}
                       onChange={this.handleOnChange}
-                      value={this.state.applicationLabelName}
+                      value={this.state.namespaceName}
                       required={true}
                     />
-                    <TextBox
-                      id={"applicationPort"}
-                      labelName={"Application Port"}
-                      onChange={this.handleOnChange}
-                      value={this.state.applicationPort}
+                    {/* <TextBox
+                      id={"requiredQuota"}
+                      labelName={"Required Quota"}
                       required={true}
-                    />
-                    <TextBox
+                      
+                    />                     */}
+                    <div className="form-group">
+                            <label
+                      className={classNames("col-sm-12")}>
+                      <input 
+                        className="input-checkbox"
+                        type="checkbox"
+                        onChange={(event) => this.handleNetworkConfigurationChecked(event)}
+                        >
+                      </input>
+                      Network Configuration
+                    </label>      
+                    </div>
+                    {this.state.isNetworkConfigurationChecked ? (
+                    <div className="table-responsive">
+                      <table className="table">
+                        <tbody>
+                          {this.state.renderNetworkConfigurationParametes}
+                        </tbody>
+                      </table>
+                    <div className="form-group">
+                      <div className="col-sm-10">
+                      <input 
+                        className="btn add-more-button"
+                        type="button"
+                        onClick={this.addNetworkConfigurationParametes}
+                        value="Add More" />
+                        </div></div>
+                    </div> ) : null}
+                    {/* <TextBox
                       id={"minReqMem"}
                       labelName={"minReqMem"}
                       onChange={this.handleOnChange}
@@ -225,7 +337,7 @@ class CreateNameSpace extends Component {
                       onChange={this.handleOnChange}
                       value={this.state.maxPodMem}
                       required={true}
-                    />
+                    /> */}
 
                     <div className="form-group float-left">
                       <div className="col-sm-10">
